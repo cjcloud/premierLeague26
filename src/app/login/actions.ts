@@ -7,7 +7,7 @@ import { eq } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 
 export async function login(
-  prevState: { error: string } | undefined,
+  prevState: { error: string } | void | undefined,
   formData: FormData
 ): Promise<{ error: string } | void> {
   const code = formData.get('code') as string;
