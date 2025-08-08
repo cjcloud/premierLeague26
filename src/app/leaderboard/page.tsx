@@ -171,7 +171,7 @@ export default async function LeaderboardPage() {
       <h1 className="text-3xl font-bold mb-6 text-center md:text-left">Leaderboard</h1>
 
       <div className="overflow-x-auto">
-        <table className="sm:min-w-full md:min-w-xl lg:min-w-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-md">
+        <table className="sm:min-w-0.9 md:max-w-[680px] lg:max-w-[800px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-md">
           <thead>
             <tr className="bg-gray-100 dark:bg-gray-800 border-b dark:border-gray-700">
               <th rowSpan={2} className="text-center py-3 px-2 font-semibold align-middle">Pos</th>
