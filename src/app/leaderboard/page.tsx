@@ -171,13 +171,13 @@ export default async function LeaderboardPage() {
       <h1 className="text-3xl font-bold mb-6 text-center md:text-left">Leaderboard</h1>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-md">
+        <table className="sm:min-w-full md:min-w-xl lg:min-w-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-md">
           <thead>
             <tr className="bg-gray-100 dark:bg-gray-800 border-b dark:border-gray-700">
               <th rowSpan={2} className="text-center py-3 px-2 font-semibold align-middle">Pos</th>
               <th rowSpan={2} className="text-left py-3 px-4 font-semibold align-middle">Team</th>
               {sortedUsers.map(user => (
-                <th key={user.id} colSpan={2} className="text-center py-3 px-4 font-semibold border-l-2 border-gray-400 dark:border-gray-600">{user.name}</th>
+                <th key={user.id} colSpan={2} className="bg-slate-300 text-center py-3 px-4 font-semibold border-l-2 border-gray-400 dark:border-gray-600">{user.name}</th>
               ))}
             </tr>
             <tr className="bg-gray-100 dark:bg-gray-800 border-b dark:border-gray-700">
