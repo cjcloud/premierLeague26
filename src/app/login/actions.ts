@@ -42,7 +42,7 @@ export async function login(
     return { error: 'A session error occurred. Please try again.' };
   }
 
-  redirect('/');
+  redirect('/leaderboard?loggedin=true');
 }
 
 export async function logout() {

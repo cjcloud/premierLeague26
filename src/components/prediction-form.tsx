@@ -98,18 +98,21 @@ export function PredictionForm({ teams, initialPredictions }: PredictionFormProp
 
   return (
     <form onSubmit={handleFormSubmit}>
-      <div className="border rounded-lg">
+      <div className="border dark:border-gray-700 rounded-lg overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[200px]">Team</TableHead>
+              <TableHead className="w-[200px] md:w-auto">Team</TableHead>
               <TableHead>Predicted Position</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {teams.map(team => (
-              <TableRow key={team.id}>
-                <TableCell className="font-medium">{team.name}</TableCell>
+            {teams.map((team, index) => (
+              <TableRow key={team.id} className={index % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'}>
+                <TableCell className="font-medium">
+                  <span className="hidden md:inline">{team.name}</span>
+                  <span className="md:hidden">{team.abbr || team.name}</span>
+                </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-4">
                     <Input
@@ -132,7 +135,7 @@ export function PredictionForm({ teams, initialPredictions }: PredictionFormProp
         </Table>
       </div>
       <div className="mt-6">
-        <Button type="submit" disabled={isSubmitting || errors.length > 0}>
+        <Button type="submit" disabled={isSubmitting || errors.length > 0} className="w-full md:w-auto">
           {isSubmitting ? 'Submitting...' : 'Submit Predictions'}
         </Button>
         {errors.length > 0 && (
