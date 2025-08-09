@@ -202,6 +202,7 @@ const LeaderboardPage = async () => {
   const userScores = users.map(user => {
     let totalPoints = 0;
     teams.forEach(team => {
+      
       const predictedPosition = userPredictionsMap.get(user.id)?.get(team.id);
       totalPoints += calculatePoints(predictedPosition, team.actualPosition);
     });
