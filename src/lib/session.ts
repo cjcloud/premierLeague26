@@ -21,7 +21,7 @@ export interface SessionData {
 export type Session = IronSession<SessionData>;
 
 export const sessionOptions = {
-  password: process.env.SECRET_COOKIE_PASSWORD as string,
+  password: process.env.SECRET_COOKIE_PASSWORD || process.env.SESSION_SECRET as string,
   cookieName: 'session',
   cookieOptions: {
     secure: process.env.NODE_ENV === 'production',
