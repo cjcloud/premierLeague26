@@ -1,25 +1,37 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Toaster } from '@/components/ui/sonner';
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
+import { getSafeSession } from '@/lib/session';
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Premier League Predictions 2026",
-  description: "Predict the final Premier League standings for the 2026 season.",
+  title: "Premier League Predictions",
+  description: "Premier League Predictions",
 };
 
-export default function RootLayout({
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "white" },
+    { media: "(prefers-color-scheme: dark)", color: "black" },
+  ],
+};
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getSafeSession();
+
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Header />
+        <Header session={session} />
         {children}
         <Toaster />
       </body>

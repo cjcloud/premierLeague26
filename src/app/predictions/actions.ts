@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '@/db';
-import { predictions } from '@/db/schema';
+import { predictions, users } from '@/db/schema';
 import { getSession } from '@/lib/session';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
@@ -21,6 +21,15 @@ export async function submitPredictions(predictionsList: TeamPrediction[]) {
   const userId = session.id as number;
 
   try {
+    // Verify user exists before proceeding
+    const user = await db.query.users.findFirst({ where: eq(users.id, userId) });
+    if (!user) {
+      // This can happen if the user's session is stale and the user has been deleted.
+      // Clearing the session and forcing a re-login is the best course of action.
+      session.destroy();
+      return { error: 'Your session is invalid. Please log in again.' };
+    }
+
     // The Neon serverless driver does not support transactions. 
     // We will perform delete and insert operations sequentially.
     
@@ -39,15 +48,14 @@ export async function submitPredictions(predictionsList: TeamPrediction[]) {
       await db.insert(predictions).values(newPredictions);
     }
 
-    // Revalidate paths to ensure fresh data is shown
-    revalidatePath('/leaderboard');
-    revalidatePath('/predictions');
-
   } catch (error) {
     console.error('Error submitting predictions:', error);
     return { error: 'A database error occurred. Please try again.' };
   }
 
+  // Revalidate paths to ensure fresh data is shown
+  revalidatePath('/leaderboard');
+  revalidatePath('/predictions');
   // Redirect to the leaderboard after successful submission
   redirect('/leaderboard');
 }

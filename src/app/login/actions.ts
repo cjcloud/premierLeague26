@@ -2,7 +2,7 @@
 
 import { db } from '@/db';
 import { users } from '@/db/schema';
-import { getSession } from '@/lib/session';
+import { login as saveLoginSession, getSession } from '@/lib/session';
 import { eq } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 
@@ -31,22 +31,20 @@ export async function login(
   }
 
   try {
-    const session = await getSession();
-    session.isLoggedIn = true;
-    session.id = foundUser.id;
-    session.name = foundUser.name;
-    session.isAdmin = foundUser.isAdmin === 1;
-    await session.save();
+    await saveLoginSession(foundUser);
   } catch (error) {
-    console.error('Session error during login:', error);
-    return { error: 'A session error occurred. Please try again.' };
+    if (error instanceof Error) {
+      console.error('Login error:', error.message);
+      return { error: 'An unexpected error occurred. Please try again.' };
+    }
+    return { error: 'An unknown error occurred.' };
   }
 
-  redirect('/leaderboard?loggedin=true');
+  redirect('/predictions');
 }
 
 export async function logout() {
   const session = await getSession();
-  session.destroy();
+  await session.destroy();
   redirect('/login');
 }
