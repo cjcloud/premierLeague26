@@ -17,7 +17,7 @@ export default function Home() {
             <Button size="default" variant="outline">Make Predictions</Button>
           </Link>
         </div>
-      <div className="mx-auto px-4 py-4 rounded-lg bg-slate-400">
+      <div className="mx-auto px-4 py-4 rounded-lg bg-slate-200">
         <p className="sm:text-[6px] md:text-lg font-bold mt-4">Points System</p>
         <p className="sm:text-[6px] md:text-lg">Correct prediction = 2 points</p> 
         <p className="sm:text-[6px] md:text-lg">Near miss = 1 point</p>
@@ -27,7 +27,7 @@ export default function Home() {
         <p className="sm:text-[6px] md:text-lg">Top 4 (Prediction and Actual) = additional 1 point</p>
         <p className="sm:text-[8px] md:text-lg">Relegation Zone (Prediction and Actual) = additional 1 point</p>
       </div>
-        <div className="sm:mt-16 md:mt-24 lg:mt-24 sm:text-[10px] md:text-md flex gap-4">
+        <div className="sm:mt-16 md:mt-24 lg:mt-24 sm:text-[6px] md:text-[8px] flex gap-4">
           <p>Brought to you by <span className="text-red-600 font-bold"> Dont Be aC*nt </span>productions</p>
         </div>
       </div>
