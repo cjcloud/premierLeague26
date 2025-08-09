@@ -50,25 +50,20 @@ const calculatePoints = (predictedPosition: number | undefined | null, actualPos
   // Base points
   if (diff === 0) {
     points = 2; // Exact prediction - 2 base points
-    console.log(`Exact match! ${points} base points`);
     
     // Bonus points for correct predictions in key positions
     if (actualPosition === 1) {
-      points += 1; // Bonus for correctly predicting champion --bonus ==0
-      console.log('Champion bonus: +1 points');
+      points += 1; // Bonus for correctly predicting champion
     } 
     else if (actualPosition >= 2 && actualPosition <= 4) {
       points += 1; // Bonus for correctly predicting top 4 (not champion)
-      console.log('Top 4 bonus: +1 point');
     } 
     else if (actualPosition >= 18 && actualPosition <= 20) {
       points += 1; // Bonus for correctly predicting relegation zone
-      console.log('Relegation zone bonus: +1 point');
     }
   } 
   else if (diff === 1) {
     points = 1; // Off by one - 1 base point
-    console.log(`Off by one! ${points} base point`);
     
     // Consolation points for near-misses in key zones
     const inTopFour = (pos: number) => pos >= 1 && pos <= 4;
@@ -77,20 +72,16 @@ const calculatePoints = (predictedPosition: number | undefined | null, actualPos
     // Both predicted and actual are in top 4
     if (inTopFour(predictedPosition) && inTopFour(actualPosition)) {
       points += 1;
-      console.log('Both positions in top 4: +1 consolation point');
     }
     // Both predicted and actual are in relegation zone
     else if (inRelegationZone(predictedPosition) && inRelegationZone(actualPosition)) {
       points += 1;
-      console.log('Both positions in relegation zone: +1 consolation point');
     }
   } 
   else {
     points = 0; // Off by more than one - 0 points
-    console.log('Off by more than one! 0 points');
   }
   
-  console.log(`Total points: ${points}`);
   return points;
 };
 
@@ -124,13 +115,7 @@ const LeaderboardPage = async () => {
 
   const userPredictionsMap = new Map<number, Map<number, number>>();
   
-  // Debug the original user predictions
-  console.log('Original user predictions:', users.map(u => ({
-    userId: u.id,
-    name: u.name,
-    predictionCount: u.predictions.length,
-    predictions: u.predictions.map(p => ({ teamId: p.teamId, pos: p.predictedPosition }))
-  })));
+  // Remove console logging for production to reduce memory usage
   
   // Check if we need to create mock prediction data (if users have no or identical predictions)
   const hasPredictions = users.some(u => u.predictions.length > 0);
@@ -146,7 +131,7 @@ const LeaderboardPage = async () => {
     } 
     // Otherwise create mock predictions with intentional variations
     else if (!hasPredictions) {
-      console.log(`Creating mock predictions for user ${user.name} (${user.id})`);
+      // Skip logging to reduce memory usage
       
       teams.forEach((team, teamIndex) => {
         // For first user - mostly correct predictions with a few off by 1 or 2
@@ -187,17 +172,7 @@ const LeaderboardPage = async () => {
     userPredictionsMap.set(user.id, predictions);
   });
   
-  // Debug the final prediction map
-  console.log('Final prediction map:');
-  // Using Array.from instead of for...of to avoid TypeScript downlevel iteration issues
-  Array.from(userPredictionsMap.entries()).forEach(([userId, predictions]) => {
-    const predArray = Array.from(predictions.entries());
-    console.log(`User ${userId} has ${predArray.length} predictions:`, 
-      predArray.map(([teamId, pos]) => {
-        const team = teams.find(t => t.id === teamId);
-        return { team: team?.name, predictedPos: pos, actualPos: team?.actualPosition };
-      }));
-  });
+  // Remove debug logging and operations to reduce memory usage
 
   const userScores = users.map(user => {
     let totalPoints = 0;
