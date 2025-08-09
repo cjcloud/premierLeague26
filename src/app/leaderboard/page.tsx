@@ -189,14 +189,15 @@ const LeaderboardPage = async () => {
   
   // Debug the final prediction map
   console.log('Final prediction map:');
-  for (const [userId, predictions] of userPredictionsMap.entries()) {
+  // Using Array.from instead of for...of to avoid TypeScript downlevel iteration issues
+  Array.from(userPredictionsMap.entries()).forEach(([userId, predictions]) => {
     const predArray = Array.from(predictions.entries());
     console.log(`User ${userId} has ${predArray.length} predictions:`, 
       predArray.map(([teamId, pos]) => {
         const team = teams.find(t => t.id === teamId);
         return { team: team?.name, predictedPos: pos, actualPos: team?.actualPosition };
       }));
-  }
+  });
 
   const userScores = users.map(user => {
     let totalPoints = 0;
