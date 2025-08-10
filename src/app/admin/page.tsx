@@ -13,6 +13,11 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
+// Force dynamic rendering for this admin page
+export const dynamic = 'force-dynamic';
+// Disable static optimization to ensure this route exists in production
+export const dynamicParams = true;
+
 export default async function AdminPage() {
   const session = await getSession();
 
