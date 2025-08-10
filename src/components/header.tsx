@@ -63,6 +63,7 @@ export default function Header({ session }: { session: Session }) {
 
   const navLinks = (
     <>
+      <Link href="/" onClick={handleLinkClick} className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Home</Link>
       <Link href="/leaderboard" onClick={handleLinkClick} className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Leaderboard</Link>
       <Link href="/predictions" onClick={handleLinkClick} className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Predictions</Link>
     </>
@@ -82,7 +83,7 @@ export default function Header({ session }: { session: Session }) {
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-6">
           <nav className="flex items-center gap-4">
-            {pathname !== '/' && navLinks}
+            {navLinks}
           </nav>
           {session.isLoggedIn ? (
             <form action={logout}>
