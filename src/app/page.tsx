@@ -6,19 +6,15 @@ export default function Home() {
   return (
     <main className="container max-w-2xl mx-auto px-4 py-8" style={{ marginTop: '30px' }}>
       <div className="flex flex-col items-center justify-center gap-6 ">
-        <div className="flex flex-col items-center justify-center gap-2 space-y-1 leading-tight">
-        <p className="text-sm sm:text-md md:text-xl lg:text-xl font-bold text-center leading-tight">Welcome to</p>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center justify-center">
+        <div className="">
+        <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-muted-foreground font-bold leading-tight">Welcome to</p>
             <Image 
                 src="/PremieLeaguePredictions.svg" 
                 width={270} 
                 height={90} 
-                alt="Predictions"  
-            />
-          </div>
-        </div>
-        
+                alt="Predictions" 
+                className=" h-auto pt-0" 
+            />        
         </div>
         <p className="text-purple-600 text-sm sm:text-md md:text-md text-center max-w-md">
           Make your selections before Aug 15th at 7pm
