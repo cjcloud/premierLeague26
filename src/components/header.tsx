@@ -77,7 +77,7 @@ export default function Header({ session }: { session: Session }) {
     <header className="bg-gray-100 dark:bg-gray-800 px-4 py-3 sticky top-0 z-50 shadow-sm">
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center gap-3">
-          <Image src="/images/premierlogo.png" width={32} height={32} alt="Premier League Logo" />
+          <Image src="/favicon/favicon.ico" width={32} height={32} alt="Premier League Logo" />
           <div className="text-lg/4 font-semibold">
             <Link href="/"><p className="pb-0">Premier League</p>
             <p className="text-xs font-italic text-purple-900 pt-0">Predictions</p></Link>

@@ -8,11 +8,24 @@ export default function Home() {
       <div className="flex flex-col items-center justify-center gap-6 ">
         <div className="flex flex-col items-center justify-center gap-2 space-y-1 leading-tight">
         <p className="text-sm sm:text-md md:text-xl lg:text-xl font-bold text-center leading-tight">Welcome to</p>
-        <Image src="/public/favicons/favicon.ico" width={32} height={32} alt="Premier League Logo" />
-        <p className="text-3xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-center leading-tight">Premier League</p>
-        <p className="text-sm sm:text-md md:text-xl lg:text-xl text-red-600 font-bold text-center leading-tight">Predictions</p>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center justify-center">
+            <Image 
+                src="/favicon/favicon.ico" 
+                width={48} 
+                height={48} 
+                alt="Premier League Logo" 
+                className="object-contain w-12 h-12 md:w-16 md:h-16" 
+            />
+          </div>
+          <div className="flex flex-col items-start justify-center space-y-[-1px] md:space-y-[-5px]">
+            <p className="text-md sm:text-lg md:text-xl lg:text-xl font-bold leading-none">Premier League</p>
+            <p className="text-sm sm:text-md md:text-lg lg:text-lg text-purple-600 font-bold leading-none">Predictions</p>
+          </div>
         </div>
-        <p className="text-muted-foreground text-xs sm:text-sm md:text-md text-center max-w-md">
+        
+        </div>
+        <p className="text-amber-600 text-sm sm:text-md md:text-md text-center max-w-md">
           Make your selections before Aug 15th at 7pm
         </p>
         <div className="sm:text-xs md:text-md flex gap-4">
