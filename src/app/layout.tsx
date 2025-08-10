@@ -3,7 +3,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
-import { getSession } from '@/lib/session';
+import { getSafeSession } from '@/lib/session';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,7 +26,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getSession();
+  // Use cached session to prevent memory leaks
+  const session = await getSafeSession();
 
   return (
     <html lang="en">

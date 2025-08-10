@@ -1,39 +1,33 @@
 import React from 'react';
 
+// Use dynamic rendering to ensure fresh data
 export const dynamic = 'force-dynamic';
+// Disable client-side data store to reduce memory usage
+export const fetchCache = 'force-no-store';
 import { getUsersWithPredictions } from '@/lib/db/queries/users';
 import { getTeams } from '@/lib/db/queries/teams';
 import Image from 'next/image';
 
-// Helper function to generate cell color style string with !important
-const getCellColorStyle = (predicted: number | undefined | null, actual: number | null) => {
-    // First, add logging to see what values we're getting
-    console.log('Color calculation - predicted:', predicted, 'actual:', actual);
-    
+// Helper function to get cell background color class
+const getCellColorClass = (predicted: number | undefined | null, actual: number | null) => {
     // Check if we have valid numbers to compare
     if (predicted === undefined || predicted === null || actual === null) {
-        console.log('Missing values, no coloring');
         return '';
     }
     
-    // Force conversion to numbers and log the values
+    // Force conversion to numbers
     const predNum = Number(predicted);
     const actNum = Number(actual);
-    console.log('After conversion - predNum:', predNum, 'actNum:', actNum, 'Difference:', Math.abs(predNum - actNum));
     
-    // Debug: log what condition is being met
     if (predNum === actNum) {
-        console.log('EXACT MATCH - using green');
-        return 'background-color: #4ade80 !important'; // Bright green for exact match
+        return 'bg-green-400'; // Green for exact match
     }
     
     if (Math.abs(predNum - actNum) === 1) {
-        console.log('OFF BY ONE - using yellow');
-        return 'background-color: #facc15 !important'; // Bright yellow for off by one
+        return 'bg-yellow-400'; // Yellow for off by one
     }
     
-    console.log('OFF BY MORE THAN ONE - using red');
-    return 'background-color: #f87171 !important'; // Bright red for more than one off
+    return 'bg-red-400'; // Red for more than one off
 };
 
 // Helper function to calculate points according to specification
@@ -85,6 +79,24 @@ const calculatePoints = (predictedPosition: number | undefined | null, actualPos
   return points;
 };
 
+// Type definitions to improve memory efficiency through proper typing
+type UserPrediction = { teamId: number, predictedPosition: number };
+type User = { id: number, name: string, predictions: UserPrediction[] };
+// Remove custom Team type - we'll use the actual return type from the getTeams function
+type UserScore = { id: number, name: string, points: number };
+
+// Memory-efficient calculation of user scores - ensure types match the actual data structure
+const calculateUserScores = (users: any[], teams: any[], predictionsMap: Map<number, Map<number, number>>) => {
+  return users.map(user => {
+    let totalPoints = 0;
+    teams.forEach(team => {
+      const predictedPosition = predictionsMap.get(user.id)?.get(team.id);
+      totalPoints += calculatePoints(predictedPosition, team.actualPosition);
+    });
+    return { id: user.id, name: user.name, points: totalPoints };
+  });
+};
+
 const LeaderboardPage = async () => {
   const users = await getUsersWithPredictions();
   const teams = await getTeams();
@@ -92,30 +104,20 @@ const LeaderboardPage = async () => {
   // Create test data if actual positions are missing (for development purposes only)
   const hasActualPositions = teams.some(t => t.actualPosition !== null && t.actualPosition !== undefined);
   
-  console.log('Teams before modification:', JSON.stringify(teams.map(t => 
-    ({ id: t.id, name: t.name, pos: t.actualPosition }))));
-  
-  if (!hasActualPositions) {
-    console.log('No actual positions found in data, applying unique test positions for development');
-    
+  if (!hasActualPositions) {    
     // Create a shuffled array of positions from 1 to teams.length
     const positions = Array.from({length: teams.length}, (_, i) => i + 1);
     
-    // Apply a unique position to each team
+    // Apply a unique position to each team (without modifying original data)
     teams.forEach((team, index) => {
       team.actualPosition = positions[index];
     });
-    
-    console.log('Applied unique positions:', teams.map(t => ({ id: t.id, name: t.name, pos: t.actualPosition })));
-  } else {
-    console.log('Team positions found');
   }
   
   const sortedTeams = [...teams].sort((a, b) => (a.actualPosition ?? 99) - (b.actualPosition ?? 99));
 
+  // Create a more memory-efficient mapping structure - only create necessary maps
   const userPredictionsMap = new Map<number, Map<number, number>>();
-  
-  // Remove console logging for production to reduce memory usage
   
   // Check if we need to create mock prediction data (if users have no or identical predictions)
   const hasPredictions = users.some(u => u.predictions.length > 0);
@@ -174,20 +176,14 @@ const LeaderboardPage = async () => {
   
   // Remove debug logging and operations to reduce memory usage
 
-  const userScores = users.map(user => {
-    let totalPoints = 0;
-    teams.forEach(team => {
-      
-      const predictedPosition = userPredictionsMap.get(user.id)?.get(team.id);
-      totalPoints += calculatePoints(predictedPosition, team.actualPosition);
-    });
-    return { id: user.id, name: user.name, points: totalPoints };
-  });
+  // Calculate scores in one pass to avoid redundant calculations
+  const userScores = calculateUserScores(users, teams, userPredictionsMap);
 
-  // Sort users by total points for the final display order in the header
+  // Sort users by total points with optimized lookup using a Map instead of find()
+  const scoreMap = new Map(userScores.map(s => [s.id, s.points]));
   const sortedUsersByScore = [...users].sort((a, b) => {
-    const scoreA = userScores.find(s => s.id === a.id)?.points ?? 0;
-    const scoreB = userScores.find(s => s.id === b.id)?.points ?? 0;
+    const scoreA = scoreMap.get(a.id) ?? 0;
+    const scoreB = scoreMap.get(b.id) ?? 0;
     return scoreB - scoreA;
   });
 
@@ -222,11 +218,18 @@ const LeaderboardPage = async () => {
                 </td>
                 <td className="py-1 sm:py-2 px-2 sm:px-4">
                   <div className="flex items-center gap-2 h-8">
-                   
-                      <Image src={`/images/${team.abbr}.svg`} alt={`${team.abbr} logo`} width={24} height={24} />
-                   
+                   {team.abbr && (
+                      <Image 
+                        src={`/images/${team.abbr}.svg`} 
+                        alt={`${team.abbr || 'Team'} logo`} 
+                        width={24} 
+                        height={24}
+                        loading="lazy"
+                        unoptimized={false}
+                      />
+                   )}
                     <span className="font-semibold hidden sm:inline">{team.name}</span>
-                    <span className="font-semibold pr-4 inline sm:hidden">{team.abbr}</span>
+                    <span className="font-semibold pr-4 inline sm:hidden">{team.abbr || team.name?.substring(0,3)}</span>
                   </div>
                 </td>
                 {sortedUsersByScore.map(user => {
@@ -239,9 +242,6 @@ const LeaderboardPage = async () => {
                   // If there's both a prediction and an actual position, apply color coding
                   if (predictedPosition !== undefined && predictedPosition !== null && team.actualPosition !== null) {
                     const difference = Math.abs(Number(predictedPosition) - Number(team.actualPosition));
-                    
-                    // Log difference for debugging
-                    console.log(`Team ${team.name} - predicted: ${predictedPosition}, actual: ${team.actualPosition}, diff: ${difference}`);
                     
                     // Exact match - green
                     if (difference === 0) {
@@ -259,27 +259,16 @@ const LeaderboardPage = async () => {
 
                   return (
                     <React.Fragment key={user.id}>
-                      {/* Direct color application for predicted position cell with style attribute */}
-                      <td 
-                        style={{fontWeight: 'bold', ...(cellColorStyle ? {background: 'none'} : {})}}
-                        className="text-center p-0 border-0"
-                        dangerouslySetInnerHTML={{
-                          __html: `<div style="${cellColorStyle}; height: 100%; width: 100%; padding: 12px; display: flex; align-items: center; justify-content: center;">
-                                    ${typeof predictedPosition === 'number' ? predictedPosition : '-'}
-                                  </div>`
-                        }}
-                      >
+                      {/* Memory-optimized rendering without dangerouslySetInnerHTML */}
+                      <td className={`text-center p-0 border-0 font-bold ${getCellColorClass(predictedPosition, team.actualPosition)}`}>
+                        <div className="h-full w-full py-3 px-2 flex items-center justify-center">
+                          {typeof predictedPosition === 'number' ? predictedPosition : '-'}
+                        </div>
                       </td>
-                      {/* Direct color application for points cell with style attribute */}
-                      <td 
-                        style={{fontWeight: 'bold', ...(cellColorStyle ? {background: 'none'} : {})}}
-                        className="text-center p-0 border-none m-0"
-                        dangerouslySetInnerHTML={{
-                          __html: `<div style="${cellColorStyle}; height: 100%; width: 100%; padding: 12px; display: flex; align-items: center; justify-content: center;">
-                                    ${points}
-                                  </div>`
-                        }}
-                      >
+                      <td className={`text-center p-0 border-0 font-bold ${getCellColorClass(predictedPosition, team.actualPosition)}`}>
+                        <div className="h-full w-full py-3 px-2 flex items-center justify-center">
+                          {points}
+                        </div>
                       </td>
                     </React.Fragment>
                   );

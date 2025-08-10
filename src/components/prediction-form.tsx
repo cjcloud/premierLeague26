@@ -16,9 +16,11 @@ interface PredictionFormProps {
     teamId: number;
     predictedPosition: number;
   }[];
+  isDisabled?: boolean;
+  deadline?: string;
 }
 
-export function PredictionForm({ teams, initialPredictions }: PredictionFormProps) {
+export function PredictionForm({ teams, initialPredictions, isDisabled = false, deadline }: PredictionFormProps) {
   const router = useRouter();
   const hasExistingPredictions = initialPredictions && initialPredictions.length > 0;
   const [predictions, setPredictions] = useState<Record<number, string>>(() => {
@@ -148,13 +150,18 @@ export function PredictionForm({ teams, initialPredictions }: PredictionFormProp
         </p>
       </div>
       <div className="mb-6 flex items-center gap-4">
-        <Button type="submit" disabled={isSubmitting || errors.length > 0} className="w-full sm:w-auto">
+        <Button type="submit" disabled={isSubmitting || errors.length > 0 || isDisabled} className="w-full sm:w-auto">
           {isSubmitting ? 'Submitting...' : 'Submit Predictions'}
         </Button>
-        <Button type="button" onClick={handleSort} variant="outline" className="w-full sm:w-auto">
+        <Button type="button" onClick={handleSort} variant="outline" disabled={isDisabled} className="w-full sm:w-auto">
           Sort by Prediction
         </Button>
       </div>
+      {deadline && !isDisabled && (
+        <p className="text-amber-600 dark:text-amber-400 text-xs mb-4">
+          Submissions close: {deadline}
+        </p>
+      )}
       <div className="border dark:border-gray-700 rounded-lg overflow-x-auto">
         <Table>
           <TableHeader>
@@ -181,10 +188,11 @@ export function PredictionForm({ teams, initialPredictions }: PredictionFormProp
                       type="number"
                       min="1"
                       max="20"
-                      className={`w-24 ${fieldErrors[team.id] ? 'border-red-500' : ''}`}
+                      className={`w-24 ${fieldErrors[team.id] ? 'border-red-500' : ''} ${isDisabled ? 'opacity-75 cursor-not-allowed' : ''}`}
                       value={predictions[team.id] || ''}
                       onChange={(e) => handleInputChange(team.id, e.target.value)}
                       required
+                      disabled={isDisabled}
                     />
                     {fieldErrors[team.id] && (
                       <span className="text-red-500 text-sm font-medium">{fieldErrors[team.id]}</span>
@@ -198,10 +206,10 @@ export function PredictionForm({ teams, initialPredictions }: PredictionFormProp
       </div>
       <div className="mt-6">
         <div className="flex items-center gap-4">
-          <Button type="submit" disabled={isSubmitting || errors.length > 0} className="w-full sm:w-auto">
+          <Button type="submit" disabled={isSubmitting || errors.length > 0 || isDisabled} className="w-full sm:w-auto">
             {isSubmitting ? 'Submitting...' : 'Submit Predictions'}
           </Button>
-          <Button type="button" onClick={handleSort} variant="outline" className="w-full sm:w-auto">
+          <Button type="button" onClick={handleSort} variant="outline" disabled={isDisabled} className="w-full sm:w-auto">
             Sort by Prediction
           </Button>
         </div>
