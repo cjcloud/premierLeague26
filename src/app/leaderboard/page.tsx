@@ -226,7 +226,7 @@ const LeaderboardPage = async () => {
                       <Image src={`/images/${team.abbr}.svg`} alt={`${team.abbr} logo`} width={24} height={24} />
                    
                     <span className="font-semibold hidden sm:inline">{team.name}</span>
-                    <span className="font-semibold inline sm:hidden">{team.abbr}</span>
+                    <span className="font-semibold pr-4 inline sm:hidden">{team.abbr}</span>
                   </div>
                 </td>
                 {sortedUsersByScore.map(user => {
