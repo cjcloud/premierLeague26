@@ -74,7 +74,8 @@ export default function Header({ session }: { session: Session }) {
         <div className="flex items-center gap-3">
           <Image src="/images/premierlogo.png" width={32} height={32} alt="Premier League Logo" />
           <div className="text-lg/4 font-semibold">
-            <Link href="/"><p className="pb-0">Premier League</p><p className="text-xs font-italic text-rose-500 pt-0">Predictions</p></Link>
+            <Link href="/"><p className="pb-0">Premier League</p>
+            <p className="text-xs font-italic text-purple-900 pt-0">Predictions</p></Link>
           </div>
         </div>
 

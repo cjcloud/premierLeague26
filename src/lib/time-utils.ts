@@ -2,8 +2,8 @@
  * Utility functions for time-based operations
  */
 
-// The deadline for predictions - August 15th, 2026 at 7pm London time
-const PREDICTIONS_DEADLINE = new Date('2026-08-15T19:00:00+01:00');
+// The deadline for predictions - August 15th, 2025 at 7pm London time
+const PREDICTIONS_DEADLINE = new Date('2025-08-15T19:00:00+01:00');
 
 /**
  * Check if the prediction deadline has passed

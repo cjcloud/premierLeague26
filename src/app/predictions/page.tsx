@@ -42,9 +42,9 @@ export default async function PredictionsPage() {
         </div>
       ) : (
         <>
-          <p className="text-amber-600 dark:text-amber-400 text-sm font-semibold mb-4">
+          {/* <p className="text-amber-600 dark:text-amber-400 text-sm font-semibold mb-4">
             Deadline: {formattedDeadline}
-          </p>
+          </p> */}
           <PredictionForm 
             teams={allTeams} 
             initialPredictions={userPredictions} 
