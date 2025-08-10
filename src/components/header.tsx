@@ -77,7 +77,9 @@ export default function Header({ session }: { session: Session }) {
     <header className="bg-gray-100 dark:bg-gray-800 px-4 py-3 sticky top-0 z-50 shadow-sm">
       <div className="container ml-0 mr-0 my-auto flex justify-between items-center">
         <div className="flex items-center gap-3">
-          <Image src="/Premier League Square.svg" width={50} height={50} alt="Premier League Logo" className='w-50 h-50 md:w-50 md:h-50 lg:w-189 lg:h-63'/>
+          <Link href="/" onClick={handleLinkClick}>
+            <Image src="/Premier League Square.svg" width={50} height={50} alt="Premier League Logo" className='w-50 h-50 md:w-50 md:h-50 lg:w-189 lg:h-63'/>
+          </Link>
         </div>
 
         {/* Desktop Nav */}
