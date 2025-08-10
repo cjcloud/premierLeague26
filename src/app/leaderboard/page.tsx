@@ -226,6 +226,7 @@ const LeaderboardPage = async () => {
                         height={24}
                         loading="lazy"
                         unoptimized={false}
+                        className="w-6 h-6"
                       />
                    )}
                     <span className="font-semibold hidden sm:inline">{team.name}</span>
