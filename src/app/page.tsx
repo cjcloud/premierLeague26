@@ -6,9 +6,9 @@ export default function Home() {
     <main className="container max-w-2xl mx-auto px-4 py-8" style={{ marginTop: '30px' }}>
       <div className="flex flex-col items-center justify-center gap-6 leading-tight">
         <div className="flex flex-col items-center justify-center gap-2">
-        <h2 className="sm:text-md md:text-xl lg:text-2xl font-bold text-center">Welcome to</h2>
-        <h2 className="sm:text-xl md:text-xl lg:text-2xl font-bold text-center">Premier League</h2>
-        <h2 className="sm:text-md md:text-xl lg:text-2xl font-bold text-center">Predictions</h2>
+        <h2 className="sm:text-md md:text-xl lg:text-xl font-bold text-center">Welcome to</h2>
+        <h2 className="sm:text-xl md:text-2xl lg:text-2xl font-bold text-center">Premier League</h2>
+        <h2 className="sm:text-md md:text-xl lg:text-xl font-bold text-center">Predictions</h2>
         </div>
         <p className="text-muted-foreground sm:text-xs md:text-md text-center max-w-md">
           Make your selections before Aug 15th at 7pm
