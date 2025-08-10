@@ -11,6 +11,7 @@ import Image from 'next/image';
 // Define a type for the session for easier usage
 type Session = {
   isLoggedIn: boolean;
+  isAdmin?: boolean;
 };
 
 function MenuIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -66,6 +67,9 @@ export default function Header({ session }: { session: Session }) {
       <Link href="/" onClick={handleLinkClick} className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Home</Link>
       <Link href="/leaderboard" onClick={handleLinkClick} className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Leaderboard</Link>
       <Link href="/predictions" onClick={handleLinkClick} className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Predictions</Link>
+      {session.isLoggedIn && session.isAdmin && (
+        <Link href="/admin" onClick={handleLinkClick} className="text-sm font-medium text-purple-600 dark:text-purple-400 font-semibold transition-colors hover:text-purple-800 dark:hover:text-purple-300">Admin</Link>
+      )}
     </>
   );
 
