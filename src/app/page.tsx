@@ -20,7 +20,7 @@ export default function Home() {
           </div>
           <div className="flex flex-col items-start justify-center space-y-[-1px] md:space-y-[-5px]">
             <p className="text-md sm:text-lg md:text-xl lg:text-xl font-bold leading-none">Premier League</p>
-            <p className="text-sm sm:text-md md:text-lg lg:text-lg text-purple-600 font-bold leading-none">Predictions</p>
+            <p className="text-sm sm:text-md md:text-lg lg:text-lg text-purple-600 font-bold leading-none">Predictions.....</p>
           </div>
         </div>
         
