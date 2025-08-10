@@ -195,20 +195,20 @@ const LeaderboardPage = async () => {
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6 text-center md:text-left">Leaderboard</h1>
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-md">
+        <table className="min-w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-md text-base sm:text-base">
           <thead>
             <tr className="bg-gray-100 dark:bg-gray-800 border-b dark:border-gray-700">
-              <th rowSpan={2} className="text-center py-2 px-2 font-semibold align-middle">Pos</th>
-              <th rowSpan={2} className="text-left py-2 px-4 font-semibold align-middle">Team</th>
+              <th rowSpan={2} className="text-center py-1 sm:py-2 px-1 sm:px-2 text-xs sm:text-base font-semibold align-middle">Pos</th>
+              <th rowSpan={2} className="text-left py-1 sm:py-2 px-2 sm:px-4 text-xs sm:text-base font-semibold align-middle">Team</th>
               {sortedUsersByScore.map(user => (
-                <th key={user.id} colSpan={2} className="text-center py-2 px-2 font-semibold border-l-2 border-gray-400 dark:border-gray-600">{user.name}</th>
+                <th key={user.id} colSpan={2} className="text-center py-1 sm:py-2 px-1 sm:px-2 text-xs sm:text-base font-semibold border-l-2 border-gray-400 dark:border-gray-600">{user.name}</th>
               ))}
             </tr>
             <tr className="bg-gray-100 dark:bg-gray-800 border-b dark:border-gray-700">
               {sortedUsersByScore.map(user => (
                 <React.Fragment key={user.id}>
-                  <th className="text-center py-1 px-2 font-semibold text-sm border-l-2 border-gray-400 dark:border-gray-600">Prd</th>
-                  <th className="text-center py-1 px-2 font-semibold text-sm border-l border-gray-200 dark:border-gray-700">Pts</th>
+                  <th className="text-center py-0 sm:py-1 px-1 sm:px-2 font-semibold text-[10px] sm:text-sm border-l-2 border-gray-400 dark:border-gray-600">Prd</th>
+                  <th className="text-center py-0 sm:py-1 px-1 sm:px-2 font-semibold text-[10px] sm:text-sm border-l border-gray-200 dark:border-gray-700">Pts</th>
                 </React.Fragment>
               ))}
             </tr>
@@ -217,10 +217,10 @@ const LeaderboardPage = async () => {
             {sortedTeams.map((team, index) => (
               <tr key={team.id} className={`${index % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'} border-b dark:border-gray-700`}>
                 {/* Current Position Column - Explicitly display with fallback */}
-                <td className="text-center py-2 px-2 font-bold text-lg">
+                <td className="text-center py-1 sm:py-2 px-1 sm:px-2 font-bold text-sm sm:text-lg">
                   {typeof team.actualPosition === 'number' ? team.actualPosition : '-'}
                 </td>
-                <td className="py-2 px-4">
+                <td className="py-1 sm:py-2 px-2 sm:px-4">
                   <div className="flex items-center gap-2 h-8">
                    
                       <Image src={`/images/${team.abbr}.svg`} alt={`${team.abbr} logo`} width={24} height={24} />
