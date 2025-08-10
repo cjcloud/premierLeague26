@@ -10,7 +10,7 @@ export default function Home() {
         <h2 className="xs:text-2xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-center">Premier League</h2>
         <h2 className="xs:text-md sm:text-md md:text-xl lg:text-xl text-red-600 font-bold text-center">Predictions</h2>
         </div>
-        <p className="text-muted-foreground sm:text-xs md:text-md text-center max-w-md">
+        <p className="text-muted-foreground xs:text-[6px] sm:text-xs md:text-md text-center max-w-md">
           Make your selections before Aug 15th at 7pm
         </p>
         <div className="sm:text-xs md:text-md flex gap-4">
