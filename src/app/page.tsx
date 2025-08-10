@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 
 export default function Home() {
@@ -6,11 +7,12 @@ export default function Home() {
     <main className="container max-w-2xl mx-auto px-4 py-8" style={{ marginTop: '30px' }}>
       <div className="flex flex-col items-center justify-center gap-6 ">
         <div className="flex flex-col items-center justify-center gap-2 space-y-1 leading-tight">
-        <p className="xs:text-md sm:text-md md:text-xl lg:text-xl font-bold text-center leading-tight">Welcome to</p>
+        <p className="text-sm sm:text-md md:text-xl lg:text-xl font-bold text-center leading-tight">Welcome to</p>
+        <Image src="/public/favicons/favicon.ico" width={32} height={32} alt="Premier League Logo" />
         <p className="text-3xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-center leading-tight">Premier League</p>
-        <p className="xs:text-md sm:text-md md:text-xl lg:text-xl text-red-600 font-bold text-center leading-tight">Predictions</p>
+        <p className="text-sm sm:text-md md:text-xl lg:text-xl text-red-600 font-bold text-center leading-tight">Predictions</p>
         </div>
-        <p className="text-muted-foreground xs:text-xs sm:text-sm md:text-md text-center max-w-md">
+        <p className="text-muted-foreground text-xs sm:text-sm md:text-md text-center max-w-md">
           Make your selections before Aug 15th at 7pm
         </p>
         <div className="sm:text-xs md:text-md flex gap-4">
