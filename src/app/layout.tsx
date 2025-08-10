@@ -10,20 +10,6 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Premier League Predictions",
   description: "Premier League Predictions",
-  icons: {
-    icon: [
-      { url: '/favicon/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/favicon/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-      { url: '/favicon/favicon.ico' }
-    ],
-    apple: [
-      { url: '/favicon/apple-touch-icon.png' }
-    ],
-    other: [
-      { url: '/favicon/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
-      { url: '/favicon/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' }
-    ]
-  },
 };
 
 export const viewport: Viewport = {
@@ -45,6 +31,13 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+        <link rel="shortcut icon" href="/favicon/favicon.ico" />
+      </head>
       <body className={inter.className}>
         <Header session={session} />
         {children}
