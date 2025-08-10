@@ -20,14 +20,14 @@ const getCellColorClass = (predicted: number | undefined | null, actual: number 
     const actNum = Number(actual);
     
     if (predNum === actNum) {
-        return 'bg-green-400'; // Green for exact match
+        return 'bg-green-400 bg-opacity-70'; // Green for exact match
     }
     
     if (Math.abs(predNum - actNum) === 1) {
-        return 'bg-yellow-400'; // Yellow for off by one
+        return 'bg-yellow-400 bg-opacity-70'; // Yellow for off by one
     }
     
-    return 'bg-red-400'; // Red for more than one off
+    return 'bg-red-400 bg-opacity-70'; // Red for more than one off
 };
 
 // Helper function to calculate points according to specification
@@ -261,12 +261,12 @@ const LeaderboardPage = async () => {
                   return (
                     <React.Fragment key={user.id}>
                       {/* Memory-optimized rendering without dangerouslySetInnerHTML */}
-                      <td className={`text-center p-0 border-0 font-bold ${getCellColorClass(predictedPosition, team.actualPosition)}`}>
+                      <td className={`text-center p-0 border-0 font-semibold ${getCellColorClass(predictedPosition, team.actualPosition)}`}>
                         <div className="h-full w-full py-3 px-2 flex items-center justify-center">
                           {typeof predictedPosition === 'number' ? predictedPosition : '-'}
                         </div>
                       </td>
-                      <td className={`text-center p-0 border-0 font-bold ${getCellColorClass(predictedPosition, team.actualPosition)}`}>
+                      <td className={`text-center p-0 border-0 font-semibold ${getCellColorClass(predictedPosition, team.actualPosition)}`}>
                         <div className="h-full w-full py-3 px-2 flex items-center justify-center">
                           {points}
                         </div>
