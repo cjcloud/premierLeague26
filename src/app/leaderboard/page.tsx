@@ -266,7 +266,7 @@ const LeaderboardPage = async () => {
                           {typeof predictedPosition === 'number' ? predictedPosition : '-'}
                         </div>
                       </td>
-                      <td className={`text-center p-0 border-r border-slate-100 font-semibold ${getCellColorClass(predictedPosition, team.actualPosition)}`}>
+                      <td className={`text-center p-0 border-r-2 border-gray-300/40 font-semibold ${getCellColorClass(predictedPosition, team.actualPosition)}`}>
                         <div className="h-full w-full py-3 px-2 flex items-center justify-center">
                           {points}
                         </div>
@@ -276,12 +276,12 @@ const LeaderboardPage = async () => {
                 })}
               </tr>
             ))}
-            <tr className="bg-gray-200 dark:bg-gray-700 font-bold">
+            <tr className="bg-gray-300 dark:bg-gray-700 font-bold">
               <td colSpan={2} className="text-right py-0 px-4">Total Points</td>
               {sortedUsersByScore.map(user => {
                 const score = userScores.find(s => s.id === user.id)?.points ?? 0;
                 return (
-                  <td key={`${user.id}-total-score`} colSpan={2} className="text-center py-0 px-2 border-l-2 border-gray-400 dark:border-gray-600">
+                  <td key={`${user.id}-total-score`} colSpan={2} className="text-center py-0 px-2 border-l-2 border-slate-100 dark:border-gray-600">
                     {score}
                   </td>
                 );
