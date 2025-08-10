@@ -201,13 +201,13 @@ const LeaderboardPage = async () => {
               <th rowSpan={2} className="text-center py-1 sm:py-2 px-1 sm:px-2 text-xs sm:text-base font-semibold align-middle">Pos</th>
               <th rowSpan={2} className="text-left py-1 sm:py-2 px-2 sm:px-4 text-xs sm:text-base font-semibold align-middle">Team</th>
               {sortedUsersByScore.map(user => (
-                <th key={user.id} colSpan={2} className="text-center py-1 sm:py-2 px-1 sm:px-2 text-xs sm:text-base font-semibold border-l-2 border-gray-400 dark:border-gray-600">{user.name}</th>
+                <th key={user.id} colSpan={2} className="text-center py-1 sm:py-2 px-1 sm:px-2 text-xs sm:text-base font-semibold border-l-2 border-gray-200 dark:border-gray-600">{user.name}</th>
               ))}
             </tr>
             <tr className="bg-gray-100 dark:bg-gray-800 border-b dark:border-gray-700">
               {sortedUsersByScore.map(user => (
                 <React.Fragment key={user.id}>
-                  <th className="text-center py-0 sm:py-1 px-1 sm:px-2 font-semibold text-[10px] sm:text-sm border-l-2 border-gray-400 dark:border-gray-600">Prd</th>
+                  <th className="text-center py-0 sm:py-1 px-1 sm:px-2 font-semibold text-[10px] sm:text-sm border-l-2 border-gray-200 dark:border-gray-600">Prd</th>
                   <th className="text-center py-0 sm:py-1 px-1 sm:px-2 font-semibold text-[10px] sm:text-sm border-l border-gray-200 dark:border-gray-700">Pts</th>
                 </React.Fragment>
               ))}
