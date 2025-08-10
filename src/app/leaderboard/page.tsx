@@ -261,12 +261,12 @@ const LeaderboardPage = async () => {
                   return (
                     <React.Fragment key={user.id}>
                       {/* Memory-optimized rendering without dangerouslySetInnerHTML */}
-                      <td className={`text-center p-0 border-0 font-semibold ${getCellColorClass(predictedPosition, team.actualPosition)}`}>
+                      <td className={`text-center p-0 border-r border-gray-300/30 font-semibold ${getCellColorClass(predictedPosition, team.actualPosition)}`}>
                         <div className="h-full w-full py-3 px-2 flex items-center justify-center">
                           {typeof predictedPosition === 'number' ? predictedPosition : '-'}
                         </div>
                       </td>
-                      <td className={`text-center p-0 border-0 font-semibold ${getCellColorClass(predictedPosition, team.actualPosition)}`}>
+                      <td className={`text-center p-0 border-r border-slate-100 font-semibold ${getCellColorClass(predictedPosition, team.actualPosition)}`}>
                         <div className="h-full w-full py-3 px-2 flex items-center justify-center">
                           {points}
                         </div>
