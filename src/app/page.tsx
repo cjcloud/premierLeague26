@@ -7,7 +7,7 @@ export default function Home() {
       <div className="flex flex-col items-center justify-center gap-6 leading-tight">
         <div className="flex flex-col items-center justify-center gap-2">
         <h2 className="sm:text-md md:text-xl lg:text-xl font-bold text-center">Welcome to</h2>
-        <h2 className="sm:text-xl md:text-2xl lg:text-2xl font-bold text-center">Premier League</h2>
+        <h2 className="sm:text-2xl md:text-3xl lg:text-3xl font-bold text-center">Premier League</h2>
         <h2 className="sm:text-md md:text-xl lg:text-xl font-bold text-center">Predictions</h2>
         </div>
         <p className="text-muted-foreground sm:text-xs md:text-md text-center max-w-md">
