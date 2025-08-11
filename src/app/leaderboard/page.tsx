@@ -190,8 +190,9 @@ const LeaderboardPage = async () => {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6 text-center md:text-left">Leaderboard</h1>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-md text-base sm:text-base">
+      <div className="overflow-x-auto -mx-4 px-1 sm:mx-0 sm:px-0">
+        <div className="max-w-[100vw] overflow-hidden">
+          <table className="w-full text-[10px] xs:text-xs sm:text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-md">
           <thead>
             <tr className="bg-gray-100 dark:bg-gray-800 border-b dark:border-gray-700">
               <th rowSpan={2} className="text-center py-1 sm:py-2 px-1 sm:px-2 text-xs sm:text-base font-semibold align-middle">Pos</th>
@@ -203,8 +204,8 @@ const LeaderboardPage = async () => {
             <tr className="bg-gray-100 dark:bg-gray-800 border-b dark:border-gray-700">
               {sortedUsersByScore.map(user => (
                 <React.Fragment key={user.id}>
-                  <th className="text-center py-0 sm:py-1 px-1 sm:px-2 font-semibold text-[10px] sm:text-sm border-l-2 border-gray-200 dark:border-gray-600">Prd</th>
-                  <th className="text-center py-0 sm:py-1 px-1 sm:px-2 font-semibold text-[10px] sm:text-sm border-l border-gray-200 dark:border-gray-700">Pts</th>
+                  <th className="text-center py-0 sm:py-1 px-1 sm:px-2 font-semibold text-[10px] sm:text-sm border-l-2 border-gray-200 dark:border-gray-600 w-10 sm:w-12">Prd</th>
+                  <th className="text-center py-0 sm:py-1 px-1 sm:px-2 font-semibold text-[10px] sm:text-sm border-l border-gray-200 dark:border-gray-700 w-10 sm:w-12">Pts</th>
                 </React.Fragment>
               ))}
             </tr>
@@ -263,12 +264,12 @@ const LeaderboardPage = async () => {
                   return (
                     <React.Fragment key={user.id}>
                       {/* Memory-optimized rendering without dangerouslySetInnerHTML */}
-                      <td className={`text-center p-0 border-r border-gray-300/30 font-semibold ${getCellColorClass(predictedPosition, team.actualPosition)}`}>
+                      <td className={`text-center p-0 border-r border-gray-300/30 font-semibold w-10 sm:w-12 ${getCellColorClass(predictedPosition, team.actualPosition)}`}>
                         <div className="h-full w-full py-3 px-2 flex items-center justify-center">
                           {typeof predictedPosition === 'number' ? predictedPosition : '-'}
                         </div>
                       </td>
-                      <td className={`text-center p-0 border-r-2 border-gray-300/40 font-semibold ${getCellColorClass(predictedPosition, team.actualPosition)}`}>
+                      <td className={`text-center p-0 border-r-2 border-gray-300/40 font-semibold w-10 sm:w-12 ${getCellColorClass(predictedPosition, team.actualPosition)}`}>
                         <div className="h-full w-full py-3 px-2 flex items-center justify-center">
                           {points}
                         </div>
@@ -291,6 +292,7 @@ const LeaderboardPage = async () => {
             </tr>
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );
