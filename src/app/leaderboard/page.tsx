@@ -216,23 +216,23 @@ const LeaderboardPage = async () => {
                 <td className="text-center py-1 sm:py-2 px-1 sm:px-2 font-bold text-sm sm:text-lg">
                   {typeof team.actualPosition === 'number' ? team.actualPosition : '-'}
                 </td>
-                <td className="py-1 sm:py-2 px-2 sm:px-4">
-                  <div className="flex items-center h-8">
-                    <div className="w-8 flex justify-center">
+                <td className="py-0 sm:py-1 px-1 sm:px-2">
+                  <div className="flex items-center h-6 sm:h-7">
+                    <div className="w-6 flex justify-center">
                       {team.abbr && (
                         <Image 
                           src={`/images/${team.abbr}.svg`} 
                           alt={`${team.abbr || 'Team'} logo`} 
-                          width={24} 
-                          height={24}
+                          width={20} 
+                          height={20}
                           loading="lazy"
                           unoptimized={false}
-                          className="w-6 h-6"
+                          className="w-5 h-5"
                         />
                       )}
                     </div>
-                    <span className="font-semibold hidden sm:inline ml-2">{team.name}</span>
-                    <span className="font-semibold pr-4 inline sm:hidden ml-2">{team.abbr || team.name?.substring(0,3)}</span>
+                    <span className="font-semibold hidden sm:inline ml-1">{team.name}</span>
+                    <span className="font-semibold pr-2 inline sm:hidden ml-1">{team.abbr || team.name?.substring(0,3)}</span>
                   </div>
                 </td>
                 {sortedUsersByScore.map(user => {
