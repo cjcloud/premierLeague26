@@ -1,8 +1,9 @@
 import { db } from '@/db';
 import { teams } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, desc, sql } from 'drizzle-orm';
 
-const API_URL = 'https://sdp-prem-prod.premier-league-prod.pulselive.com/api/v5/competitions/8/seasons/2025/standings?live=false';
+// Use environment variable for API URL with fallback for local development
+const API_URL = process.env.PREMIER_LEAGUE_API_URL || 'https://sdp-prem-prod.premier-league-prod.pulselive.com/api/v5/competitions/8/seasons/2025/standings?live=false';
 
 interface ApiTeamEntry {
   team: {
@@ -19,6 +20,50 @@ interface ApiResponse {
   }[];
 }
 
+/**
+ * Checks if the team standings data needs to be updated
+ * Data is considered stale if it's older than 3 minutes
+ */
+export async function shouldUpdateStandings(): Promise<boolean> {
+  try {
+    // Get the most recent lastUpdated value from any team
+    const result = await db
+      .select({ lastUpdated: teams.lastUpdated })
+      .from(teams)
+      .orderBy(desc(teams.lastUpdated))
+      .limit(1);
+    
+    // If no teams exist yet, we should definitely update
+    if (!result.length) {
+      console.log('No teams found in the database. Update needed.');
+      return true;
+    }
+    
+    const lastUpdate = result[0].lastUpdated;
+    if (!lastUpdate) {
+      console.log('Team exists but lastUpdated is null. Update needed.');
+      return true;
+    }
+    
+    const now = new Date();
+    const diffMs = now.getTime() - lastUpdate.getTime();
+    const diffMinutes = diffMs / (1000 * 60);
+    
+    // If data is older than 3 minutes, we should update
+    const isStale = diffMinutes > 3;
+    console.log(`Last update was ${diffMinutes.toFixed(1)} minutes ago. Update needed: ${isStale}`);
+    
+    return isStale;
+  } catch (error) {
+    console.error('Error checking if update is needed:', error);
+    // On error, it's safer to return false to avoid excessive API calls
+    return false;
+  }
+}
+
+/**
+ * Updates team standings from the Premier League API
+ */
 export async function updateTeamStandings() {
   try {
     console.log('Fetching latest standings from Premier League API...');
@@ -44,7 +89,10 @@ export async function updateTeamStandings() {
       // Await each update individually to process them sequentially
       await db
         .update(teams)
-        .set({ actualPosition: position })
+        .set({ 
+          actualPosition: position,
+          lastUpdated: new Date() 
+        })
         .where(eq(teams.apiId, apiId));
     }
 

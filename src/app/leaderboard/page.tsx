@@ -6,6 +6,7 @@ export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
 import { getUsersWithPredictions } from '@/lib/db/queries/users';
 import { getTeams } from '@/lib/db/queries/teams';
+import { shouldUpdateStandings, updateTeamStandings } from '@/lib/api';
 import Image from 'next/image';
 
 // Helper function to get cell background color class
@@ -98,8 +99,56 @@ const calculateUserScores = (users: any[], teams: any[], predictionsMap: Map<num
 };
 
 const LeaderboardPage = async () => {
+  console.log(`[Leaderboard] Page rendering started at ${new Date().toISOString()}`);
+
+  // Get users while we check if team data needs updating
+  console.log(`[Leaderboard] Fetching users from database`);
   const users = await getUsersWithPredictions();
+  
+  // Check if team standings data is stale (older than 3 minutes)
+  console.log('[Leaderboard] Checking if Premier League data needs updating...');
+  const needsUpdate = await shouldUpdateStandings();
+  console.log(`[Leaderboard] API update needed: ${needsUpdate ? 'YES' : 'NO'}`);
+  
+  // If update is needed, fetch fresh data from API
+  if (needsUpdate) {
+    console.log('[Leaderboard] Data is stale (> 3 minutes old). Updating from Premier League API...');
+    await updateTeamStandings();
+    console.log('[Leaderboard] API update completed successfully');
+  } else {
+    console.log('[Leaderboard] Using cached data (< 3 minutes old)');
+  }
+
+  // Always get the teams after potential update
+  console.log('[Leaderboard] Fetching teams from database');
   const teams = await getTeams();
+
+  // Log detailed information about the team data timestamps
+  let oldestData = new Date();
+  let newestData = new Date(0);
+  let hasTimestamp = false;
+  
+  teams.forEach(team => {
+    if (team.lastUpdated) {
+      hasTimestamp = true;
+      if (team.lastUpdated < oldestData) {
+        oldestData = team.lastUpdated;
+      }
+      if (team.lastUpdated > newestData) {
+        newestData = team.lastUpdated;
+      }
+    }
+  });
+
+  if (hasTimestamp) {
+    const ageInMinutes = (Date.now() - oldestData.getTime()) / (1000 * 60);
+    const ageInSeconds = (Date.now() - oldestData.getTime()) / 1000;
+    console.log(`[Leaderboard] Oldest team data timestamp: ${oldestData.toISOString()} (${ageInMinutes.toFixed(1)} minutes old)`);
+    console.log(`[Leaderboard] Newest team data timestamp: ${newestData.toISOString()} (${(Date.now() - newestData.getTime()) / 1000} seconds old)`);
+    console.log(`[Leaderboard] Time since last update: ${ageInSeconds.toFixed(0)} seconds`);
+  } else {
+    console.log('[Leaderboard] WARNING: No lastUpdated timestamps found in team data');
+  }
   
   // Create test data if actual positions are missing (for development purposes only)
   const hasActualPositions = teams.some(t => t.actualPosition !== null && t.actualPosition !== undefined);

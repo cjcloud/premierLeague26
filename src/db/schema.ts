@@ -1,4 +1,4 @@
-import { pgTable, serial, text, varchar, integer, uniqueIndex } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, varchar, integer, uniqueIndex, timestamp } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 // Users Table
@@ -19,6 +19,7 @@ export const teams = pgTable('teams', {
   shortName: varchar('short_name', { length: 256 }),
   abbr: varchar('abbr', { length: 10 }),
   actualPosition: integer('actual_position'),
+  lastUpdated: timestamp('last_updated').defaultNow(),
 });
 
 // Predictions Table
