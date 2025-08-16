@@ -42,6 +42,10 @@ const calculatePoints = (predictedPosition: number | undefined | null, actualPos
   
   const diff = Math.abs(predictedPosition - actualPosition);
   
+  // Helper functions to check if a position is in a special zone
+  const inTopFour = (pos: number) => pos >= 1 && pos <= 4;
+  const inRelegationZone = (pos: number) => pos >= 18 && pos <= 20;
+  
   // Base points
   if (diff === 0) {
     points = 2; // Exact prediction - 2 base points
@@ -60,10 +64,7 @@ const calculatePoints = (predictedPosition: number | undefined | null, actualPos
   else if (diff === 1) {
     points = 1; // Off by one - 1 base point
     
-    // Consolation points for near-misses in key zones
-    const inTopFour = (pos: number) => pos >= 1 && pos <= 4;
-    const inRelegationZone = (pos: number) => pos >= 18 && pos <= 20;
-    
+    // Bonus points when both positions are in the same special zone
     // Both predicted and actual are in top 4
     if (inTopFour(predictedPosition) && inTopFour(actualPosition)) {
       points += 1;
@@ -73,8 +74,21 @@ const calculatePoints = (predictedPosition: number | undefined | null, actualPos
       points += 1;
     }
   } 
+  else if (diff <= 3) {
+    points = 0; // Off by 2 or 3 - normally 0 base points
+    
+    // Bonus point when both positions are in the same special zone despite being off by 2-3 positions
+    // Both predicted and actual are in top 4
+    if (inTopFour(predictedPosition) && inTopFour(actualPosition)) {
+      points += 1;
+    }
+    // Both predicted and actual are in relegation zone
+    else if (inRelegationZone(predictedPosition) && inRelegationZone(actualPosition)) {
+      points += 1;
+    }
+  }
   else {
-    points = 0; // Off by more than one - 0 points
+    points = 0; // Off by more than three - 0 points
   }
   
   return points;
