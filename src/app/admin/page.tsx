@@ -3,6 +3,9 @@ import { redirect } from 'next/navigation';
 import { db } from '@/db';
 import { users } from '@/db/schema';
 import { EditCodeDialog } from '@/components/edit-code-dialog';
+import { RefreshStandingsButton } from '@/components/refresh-standings-button';
+import { LastUpdatedIndicator } from '@/components/last-updated-indicator';
+import { getLastUpdateTimestamp } from '@/lib/db/queries/teams';
 import {
   Table,
   TableBody,
@@ -26,10 +29,19 @@ export default async function AdminPage() {
   }
 
   const allUsers = await db.select().from(users);
+  const lastUpdatedTimestamp = await getLastUpdateTimestamp();
 
   return (
     <div className="container mx-auto py-10">
-      <h1 className="text-2xl font-bold mb-4">Manage Access Codes</h1>
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+          <LastUpdatedIndicator timestamp={lastUpdatedTimestamp} />
+        </div>
+        <RefreshStandingsButton />
+      </div>
+      
+      <h2 className="text-xl font-bold mb-4">Manage Access Codes</h2>
       <Table>
         <TableCaption>A list of all users and their access codes.</TableCaption>
         <TableHeader>

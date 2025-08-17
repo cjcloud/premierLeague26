@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Toaster } from '@/components/ui/sonner';
+import { Toaster } from '@/components/ui/toaster';
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
