@@ -4,9 +4,15 @@ import React from 'react';
 export const dynamic = 'force-dynamic';
 // Disable client-side data store to reduce memory usage
 export const fetchCache = 'force-no-store';
+// Add cache tag for easier cache invalidation
+export const runtime = 'nodejs';
+// Ensure the entire page refreshes, not just segments
+export const revalidate = 0;
+
 import { getUsersWithPredictions } from '@/lib/db/queries/users';
 import { getTeams } from '@/lib/db/queries/teams';
 import { shouldUpdateStandings, updateTeamStandings } from '@/lib/api';
+import { unstable_cache } from 'next/cache';
 import Image from 'next/image';
 
 // Helper function to get cell background color class

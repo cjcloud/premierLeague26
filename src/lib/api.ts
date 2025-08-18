@@ -1,6 +1,7 @@
 import { db } from '@/db';
 import { teams } from '@/db/schema';
 import { eq, desc, sql } from 'drizzle-orm';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 // Use environment variable for API URL with fallback for local development
 const API_URL = process.env.PREMIER_LEAGUE_API_URL || 'https://sdp-prem-prod.premier-league-prod.pulselive.com/api/v5/competitions/8/seasons/2025/standings?live=false';
@@ -71,7 +72,13 @@ export async function updateTeamStandings() {
       headers: {
         'Origin': 'https://www.premierleague.com',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+        // Add cache control headers to prevent caching
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
       },
+      // Force fetch to bypass cache
+      cache: 'no-store',
+      next: { revalidate: 0 },
     });
 
     if (!response.ok) {
@@ -95,6 +102,12 @@ export async function updateTeamStandings() {
         })
         .where(eq(teams.apiId, apiId));
     }
+    
+    // Comprehensive cache invalidation
+    revalidatePath('/leaderboard', 'page');
+    revalidatePath('/admin', 'page');
+    revalidatePath('/', 'layout');
+    revalidateTag('team-data');
 
     console.log('Successfully updated team standings in the database.');
     return { success: true, message: `Updated ${standings.length} teams.` };
