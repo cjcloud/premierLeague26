@@ -1,4 +1,5 @@
 import React from 'react';
+import { headers } from 'next/headers';
 
 // Use dynamic rendering to ensure fresh data
 export const dynamic = 'force-dynamic';
@@ -12,8 +13,8 @@ export const revalidate = 0;
 import { getUsersWithPredictions } from '@/lib/db/queries/users';
 import { getTeams } from '@/lib/db/queries/teams';
 import { shouldUpdateStandings, updateTeamStandings } from '@/lib/api';
-import { unstable_cache } from 'next/cache';
 import Image from 'next/image';
+import RefreshLeaderboardButton from '@/components/refresh-leaderboard-button';
 
 // Helper function to get cell background color class
 const getCellColorClass = (predicted: number | undefined | null, actual: number | null) => {
@@ -118,22 +119,45 @@ const calculateUserScores = (users: any[], teams: any[], predictionsMap: Map<num
   });
 };
 
+// Function to set cache control headers
+export function generateMetadata() {
+  // This ensures browsers don't cache the page
+  return {
+    other: {
+      'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+    },
+  };
+}
+
 const LeaderboardPage = async () => {
+  // Set response headers to prevent browser caching
+  const headersList = headers();
+  // Log headers for debugging
+  console.log('[Leaderboard] Request headers:', JSON.stringify(Object.fromEntries(headersList.entries())));
+  
   console.log(`[Leaderboard] Page rendering started at ${new Date().toISOString()}`);
 
   // Get users while we check if team data needs updating
   console.log(`[Leaderboard] Fetching users from database`);
   const users = await getUsersWithPredictions();
   
+  // Force a timestamp parameter to ensure we always get a fresh response
+  const timestamp = Date.now();
+  console.log(`[Leaderboard] Request at timestamp: ${timestamp}`);
+  
   // Check if team standings data is stale (older than 3 minutes)
   console.log('[Leaderboard] Checking if Premier League data needs updating...');
-  const needsUpdate = await shouldUpdateStandings();
+  // Add timestamp to prevent in-memory caching of the function result
+  const needsUpdate = await shouldUpdateStandings(`timestamp-${timestamp}`);
   console.log(`[Leaderboard] API update needed: ${needsUpdate ? 'YES' : 'NO'}`);
   
   // If update is needed, fetch fresh data from API
   if (needsUpdate) {
     console.log('[Leaderboard] Data is stale (> 3 minutes old). Updating from Premier League API...');
-    await updateTeamStandings();
+    // Add timestamp to ensure fresh API call
+    await updateTeamStandings(`refresh-${timestamp}`);
     console.log('[Leaderboard] API update completed successfully');
   } else {
     console.log('[Leaderboard] Using cached data (< 3 minutes old)');
@@ -258,7 +282,12 @@ const LeaderboardPage = async () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6 text-center md:text-left">Leaderboard</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-center md:text-left">Leaderboard</h1>
+        <div className="flex items-center">
+          <RefreshLeaderboardButton />
+        </div>
+      </div>
       <div className="overflow-x-auto -mx-4 px-1 sm:mx-0 sm:px-0">
         <div className="max-w-[100vw] overflow-hidden">
           <table className="w-full text-[11px] xs:text-xs sm:text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-md">

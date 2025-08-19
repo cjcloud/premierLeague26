@@ -17,14 +17,11 @@ export default function Home() {
             />        
         </div>
         <p className="text-purple-600 text-sm sm:text-md md:text-md text-center max-w-md">
-          Make your selections before Aug 15th at 7pm
+          All predictions are now locked in for the season
         </p>
         <div className="sm:text-xs md:text-md flex gap-4">
           <Link href="/leaderboard">
             <Button size="default" className="sm:text-[10px] md:text-md lg:text-[14px]">View Leaderboard</Button>
-          </Link>
-          <Link href="/predictions">
-            <Button size="default" variant="outline">Make Predictions</Button>
           </Link>
         </div>
       <div className="mx-auto py-4 px-4 rounded-lg bg-slate-200">

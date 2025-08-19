@@ -24,8 +24,13 @@ interface ApiResponse {
 /**
  * Checks if the team standings data needs to be updated
  * Data is considered stale if it's older than 3 minutes
+ * @param cacheKey Optional parameter to prevent caching of this function call
  */
-export async function shouldUpdateStandings(): Promise<boolean> {
+export async function shouldUpdateStandings(cacheKey?: string): Promise<boolean> {
+  // Log the cache key to verify it's being used
+  if (cacheKey) {
+    console.log(`[API] shouldUpdateStandings called with cache key: ${cacheKey}`);
+  }
   try {
     // Get the most recent lastUpdated value from any team
     const result = await db
@@ -64,8 +69,13 @@ export async function shouldUpdateStandings(): Promise<boolean> {
 
 /**
  * Updates team standings from the Premier League API
+ * @param cacheKey Optional parameter to prevent caching of this function call
  */
-export async function updateTeamStandings() {
+export async function updateTeamStandings(cacheKey?: string) {
+  // Log the cache key to verify it's being used
+  if (cacheKey) {
+    console.log(`[API] updateTeamStandings called with cache key: ${cacheKey}`);
+  }
   try {
     console.log('Fetching latest standings from Premier League API...');
     const response = await fetch(API_URL, {

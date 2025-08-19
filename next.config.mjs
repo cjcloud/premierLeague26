@@ -3,6 +3,12 @@ const nextConfig = {
   // Ensure all routes, including admin, are processed correctly
   // This helps prevent 404 errors in production
   output: 'standalone',
+  
+  // Enable proper CSS loading and processing
+  poweredByHeader: false,
+  reactStrictMode: true,
+  swcMinify: true,
+  
   // Allow middleware to handle admin authorization
   experimental: {
     instrumentationHook: true,

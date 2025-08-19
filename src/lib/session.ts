@@ -1,5 +1,4 @@
 import 'server-only';
-import { cache } from 'react';
 import { getIronSession, IronSession } from 'iron-session';
 import { cookies } from 'next/headers';
 
@@ -32,7 +31,7 @@ export function getSession() {
   return getIronSession<SessionData>(cookies(), sessionOptions);
 }
 
-export const getSafeSession = cache(async () => {
+export async function getSafeSession() {
   const session = await getIronSession<SessionData>(cookies(), sessionOptions);
   return {
     isLoggedIn: session.isLoggedIn ?? false,
@@ -40,7 +39,7 @@ export const getSafeSession = cache(async () => {
     name: session.name,
     isAdmin: session.isAdmin,
   };
-});
+}
 
 export async function login(user: User) {
   const session = await getSession();
