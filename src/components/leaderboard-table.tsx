@@ -25,6 +25,17 @@ const getCellColorClass = (predicted: number | undefined | null, actual: number 
   return 'bg-red-400 bg-opacity-70'; // Red for more than one off
 };
 
+// Helper function to color the points cells based on point value
+const getPointsColorClass = (points: number) => {
+  if (points === 3) {
+    return 'bg-green-400 bg-opacity-70'; // Green for 3 points (exact match)
+  }
+  if (points === 1) {
+    return 'bg-yellow-400 bg-opacity-70'; // Yellow for 1 point (off by one)
+  }
+  return ''; // No color for 0 points
+};
+
 // Define types for props
 type Team = {
   id: number;
