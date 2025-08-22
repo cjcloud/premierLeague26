@@ -7,13 +7,13 @@ const sql = neon(process.env.DATABASE_URL!);
 const db = drizzle(sql, { schema });
 
 async function main() {
-  console.log('Resetting database...');
+  // Resetting database
   await db.delete(schema.predictions);
   await db.delete(schema.users);
   await db.delete(schema.teams);
-  console.log('Database reset complete.');
+  // Database reset complete
 
-  console.log('Seeding database...');
+  // Seeding database
 
   // Hardcoded user data as per specifications
   const userData = [
@@ -26,7 +26,7 @@ async function main() {
   // Insert users.
   await db.insert(schema.users).values(userData);
 
-  console.log('Seeding teams...');
+  // Seeding teams
 
   // Fetch team data from the Premier League API
   const response = await fetch('https://sdp-prem-prod.premier-league-prod.pulselive.com/api/v5/competitions/8/seasons/2025/standings?live=false', {
@@ -52,12 +52,12 @@ async function main() {
   // Insert teams, and on conflict (based on apiId), do nothing.
   await db.insert(schema.teams).values(teamsData).onConflictDoNothing({ target: schema.teams.apiId });
 
-  console.log('Teams seeded successfully!');
+  // Teams seeded successfully
 
-  console.log('Database seeded successfully!');
+  // Database seeded successfully
 }
 
-main().catch((err) => {
-  console.error('Error seeding database:', err);
+main().catch(() => {
+  // Silent error handling to prevent logging sensitive information
   process.exit(1);
 });

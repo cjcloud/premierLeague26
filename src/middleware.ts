@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { sessionOptions } from '@/lib/session';
+import { sessionOptions, SessionData } from '@/lib/session';
 import { unsealData } from 'iron-session';
 
 // Paths that should not be intercepted by middleware (static files and Next.js internal routes)
@@ -39,7 +39,7 @@ export async function middleware(request: NextRequest) {
     
     try {
       // Attempt to unseal the session data
-      const session = await unsealData(sessionCookie.value, {
+      const session = await unsealData<SessionData>(sessionCookie.value, {
         password: sessionOptions.password,
       });
       

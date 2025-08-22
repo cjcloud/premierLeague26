@@ -28,9 +28,8 @@ interface ApiResponse {
  */
 export async function shouldUpdateStandings(cacheKey?: string): Promise<boolean> {
   // Log the cache key to verify it's being used
-  if (cacheKey) {
-    console.log(`[API] shouldUpdateStandings called with cache key: ${cacheKey}`);
-  }
+  // Cache key handling
+  // No debug logging to prevent information leakage
   try {
     // Get the most recent lastUpdated value from any team
     const result = await db
@@ -41,13 +40,13 @@ export async function shouldUpdateStandings(cacheKey?: string): Promise<boolean>
     
     // If no teams exist yet, we should definitely update
     if (!result.length) {
-      console.log('No teams found in the database. Update needed.');
+      // No teams found in the database. Update needed.
       return true;
     }
     
     const lastUpdate = result[0].lastUpdated;
     if (!lastUpdate) {
-      console.log('Team exists but lastUpdated is null. Update needed.');
+      // Team exists but lastUpdated is null. Update needed.
       return true;
     }
     
@@ -57,11 +56,11 @@ export async function shouldUpdateStandings(cacheKey?: string): Promise<boolean>
     
     // If data is older than 3 minutes, we should update
     const isStale = diffMinutes > 3;
-    console.log(`Last update was ${diffMinutes.toFixed(1)} minutes ago. Update needed: ${isStale}`);
+    // Time-based update check complete
     
     return isStale;
   } catch (error) {
-    console.error('Error checking if update is needed:', error);
+    // Error handled silently to prevent logging sensitive information
     // On error, it's safer to return false to avoid excessive API calls
     return false;
   }
@@ -73,11 +72,10 @@ export async function shouldUpdateStandings(cacheKey?: string): Promise<boolean>
  */
 export async function updateTeamStandings(cacheKey?: string) {
   // Log the cache key to verify it's being used
-  if (cacheKey) {
-    console.log(`[API] updateTeamStandings called with cache key: ${cacheKey}`);
-  }
+  // Cache key handling
+  // No debug logging to prevent information leakage
   try {
-    console.log('Fetching latest standings from Premier League API...');
+    // Fetching latest standings from Premier League API
     const response = await fetch(API_URL, {
       headers: {
         'Origin': 'https://www.premierleague.com',
@@ -87,7 +85,6 @@ export async function updateTeamStandings(cacheKey?: string) {
         'Pragma': 'no-cache',
       },
       // Force fetch to bypass cache
-      cache: 'no-store',
       next: { revalidate: 0 },
     });
 
@@ -98,7 +95,7 @@ export async function updateTeamStandings(cacheKey?: string) {
     const data: ApiResponse = await response.json();
     const standings = data.tables[0].entries;
 
-    console.log(`Found ${standings.length} teams in the standings.`);
+    // Process teams from standings data
 
     for (const entry of standings) {
       const apiId = parseInt(entry.team.id, 10);
@@ -119,11 +116,11 @@ export async function updateTeamStandings(cacheKey?: string) {
     revalidatePath('/', 'layout');
     revalidateTag('team-data');
 
-    console.log('Successfully updated team standings in the database.');
+    // Successfully updated team standings in the database
     return { success: true, message: `Updated ${standings.length} teams.` };
 
   } catch (error) {
-    console.error('Failed to update team standings:', error);
+    // Error handled silently to prevent logging sensitive information
     if (error instanceof Error) {
         return { success: false, error: error.message };
     }

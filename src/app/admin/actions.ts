@@ -16,14 +16,14 @@ export async function updateAccessCode(userId: number, newCode: string) {
     revalidatePath('/admin');
     return { success: 'Access code updated successfully.' };
   } catch (error) {
-    console.error('Error updating access code:', error);
+    // Error handled silently to prevent logging sensitive information
     return { error: 'An unexpected error occurred.' };
   }
 }
 
 export async function forceRefreshStandings() {
   try {
-    console.log('Force refreshing team standings...');
+    // Force refreshing team standings
     const result = await updateTeamStandings();
     
     // Revalidate both the admin page and the leaderboard page
@@ -36,7 +36,7 @@ export async function forceRefreshStandings() {
       return { error: result.error || 'Failed to update team standings.' };
     }
   } catch (error) {
-    console.error('Error force refreshing team standings:', error);
+    // Error handled silently to prevent logging sensitive information
     return { error: 'An unexpected error occurred while refreshing data.' };
   }
 }

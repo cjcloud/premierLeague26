@@ -1,0 +1,66 @@
+[debug] [2025-08-20T22:42:36.713Z] ----------------------------------------------------------------------
+[debug] [2025-08-20T22:42:36.759Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\User\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js serve
+[debug] [2025-08-20T22:42:36.762Z] CLI Version:   12.5.4
+[debug] [2025-08-20T22:42:36.764Z] Platform:      win32
+[debug] [2025-08-20T22:42:36.765Z] Node Version:  v22.17.0
+[debug] [2025-08-20T22:42:36.767Z] Time:          Wed Aug 20 2025 23:42:36 GMT+0100 (British Summer Time)
+[debug] [2025-08-20T22:42:36.768Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-08-20T22:42:36.792Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[error] 
+[error] Error: Not in a Firebase app directory (could not locate firebase.json)
+[debug] [2025-08-20T22:42:37.701Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2025-08-20T22:42:37.703Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2025-08-20T22:42:37.859Z] Error: EBUSY: resource busy or locked, unlink 'C:\Users\User\Projects\premierLeague\2026\firebase-debug.log'
+    at Object.unlinkSync (node:fs:1952:11)
+    at process.<anonymous> (C:\Users\User\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js:84:12)
+    at process.emit (node:events:530:35)
+    at process.exit (node:internal/process/per_thread:194:15)
+    at Timeout._onTimeout (C:\Users\User\AppData\Roaming\npm\node_modules\firebase-tools\lib\errorOut.js:20:17)
+    at listOnTimeout (node:internal/timers:588:17)
+    at process.processTimers (node:internal/timers:523:7)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2025-08-20T22:43:21.071Z] ----------------------------------------------------------------------
+[debug] [2025-08-20T22:43:21.092Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\User\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init hosting
+[debug] [2025-08-20T22:43:21.095Z] CLI Version:   12.5.4
+[debug] [2025-08-20T22:43:21.098Z] Platform:      win32
+[debug] [2025-08-20T22:43:21.099Z] Node Version:  v22.17.0
+[debug] [2025-08-20T22:43:21.101Z] Time:          Wed Aug 20 2025 23:43:21 GMT+0100 (British Summer Time)
+[debug] [2025-08-20T22:43:21.103Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-08-20T22:43:21.149Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-20T22:43:21.152Z] > authorizing via signed-in user (cjcloudsolutions@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\User\Projects\premierLeague\2026
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2025-08-20T22:43:39.395Z] > refreshing access token with scopes: []
+[debug] [2025-08-20T22:43:39.419Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2025-08-20T22:43:39.419Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-08-20T22:43:40.131Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 400
+[debug] [2025-08-20T22:43:40.132Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-08-20T22:43:40.135Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=100
+[debug] [2025-08-20T22:43:40.336Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 401
+[debug] [2025-08-20T22:43:40.336Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[debug] [2025-08-20T22:43:40.341Z] HTTP Error: 401, Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+[debug] [2025-08-20T22:43:40.496Z] FirebaseError: HTTP Error: 401, Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+    at responseToError (C:\Users\User\AppData\Roaming\npm\node_modules\firebase-tools\lib\responseToError.js:49:12)
+    at RetryOperation._fn (C:\Users\User\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:285:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[error] 
+[error] Error: Failed to list Firebase projects. See firebase-debug.log for more info.
