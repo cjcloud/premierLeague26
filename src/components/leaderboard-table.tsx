@@ -53,13 +53,13 @@ export default function LeaderboardTable({ teams, users }: LeaderboardTableProps
   const sortedUsers = users;
 
   return (
-    <div className="overflow-x-auto -mx-4 px-1 sm:mx-0 sm:px-0">
-      <div className="max-w-[100vw] overflow-hidden">
-        <table className="w-full text-[11px] xs:text-xs sm:text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-md">
+    <div className="w-full overflow-auto">
+      <div className="w-[780px] mx-auto">
+        <table className="w-full text-[10px] xs:text-xs sm:text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-md table-fixed">
           <thead>
             <tr className="bg-gray-100 dark:bg-gray-800 border-b dark:border-gray-700">
-              <th rowSpan={2} className="text-center py-1 sm:py-2 px-1 sm:px-2 text-xs sm:text-base font-semibold align-middle">Pos</th>
-              <th rowSpan={2} className="text-left py-1 sm:py-2 px-2 sm:px-4 text-xs sm:text-base font-semibold align-middle">Team</th>
+              <th rowSpan={2} className="text-center py-1 sm:py-2 px-0 sm:px-1 text-xs sm:text-base font-semibold align-middle w-8">Pos</th>
+              <th rowSpan={2} className="text-left py-1 sm:py-2 px-1 sm:px-2 text-xs sm:text-base font-semibold align-middle w-24 sm:w-32">Team</th>
               {sortedUsers.map(user => (
                 <th key={user.id} colSpan={2} className="text-center py-1 sm:py-2 px-1 sm:px-2 text-xs sm:text-base font-semibold border-l-2 border-gray-200 dark:border-gray-600">{user.name}</th>
               ))}
@@ -67,8 +67,8 @@ export default function LeaderboardTable({ teams, users }: LeaderboardTableProps
             <tr className="bg-gray-100 dark:bg-gray-800 border-b dark:border-gray-700">
               {sortedUsers.map(user => (
                 <React.Fragment key={user.id}>
-                  <th className="text-center py-0 sm:py-1 px-0 sm:px-1 font-semibold text-[11px] sm:text-sm border-l-2 border-gray-200 dark:border-gray-600 w-8 sm:w-10">Prd</th>
-                  <th className="text-center py-0 sm:py-1 px-0 sm:px-1 font-semibold text-[11px] sm:text-sm border-l border-gray-200 dark:border-gray-700 w-8 sm:w-10">Pts</th>
+                  <th className="text-center py-0 sm:py-1 px-0 font-semibold text-[10px] sm:text-xs border-l-2 border-gray-200 dark:border-gray-600 w-8">Prd</th>
+                  <th className="text-center py-0 sm:py-1 px-0 font-semibold text-[10px] sm:text-xs border-l border-gray-200 dark:border-gray-700 w-8">Pts</th>
                 </React.Fragment>
               ))}
             </tr>
@@ -77,12 +77,12 @@ export default function LeaderboardTable({ teams, users }: LeaderboardTableProps
             {sortedTeams.map((team, index) => (
               <tr key={team.id} className={`${index % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'} border-b dark:border-gray-700`}>
                 {/* Current Position Column - Explicitly display with fallback */}
-                <td className="text-center py-1 sm:py-2 px-1 sm:px-2 font-bold text-sm sm:text-lg">
+                <td className="text-center py-1 sm:py-2 px-0 sm:px-1 font-bold text-xs sm:text-base w-8">
                   {typeof team.actualPosition === 'number' ? team.actualPosition : '-'}
                 </td>
-                <td className="py-0 sm:py-1 px-1 sm:px-2">
-                  <div className="flex items-center h-6 sm:h-7">
-                    <div className="w-6 flex justify-center">
+                <td className="py-0 sm:py-1 px-1 sm:px-2 w-24 sm:w-32">
+                  <div className="flex items-center h-6 sm:h-7 overflow-hidden">
+                    <div className="flex-none w-5 h-5 flex justify-center">
                       {team.abbr && (
                         <Image 
                           src={`/images/${team.abbr}.svg`} 
@@ -95,8 +95,8 @@ export default function LeaderboardTable({ teams, users }: LeaderboardTableProps
                         />
                       )}
                     </div>
-                    <span className="font-semibold hidden sm:inline ml-1">{team.name}</span>
-                    <span className="font-semibold pr-2 inline sm:hidden ml-1">{team.abbr || team.name?.substring(0,3)}</span>
+                    <span className="font-semibold hidden sm:inline ml-2 truncate block">{team.name}</span>
+                    <span className="font-semibold inline sm:hidden ml-2">{team.abbr || team.name?.substring(0,3)}</span>
                   </div>
                 </td>
                 {sortedUsers.map(user => {
@@ -106,12 +106,12 @@ export default function LeaderboardTable({ teams, users }: LeaderboardTableProps
                   
                   return (
                     <React.Fragment key={user.id}>
-                      <td className={`text-center p-0 border-r border-gray-300/30 font-semibold w-8 sm:w-10 ${getCellColorClass(predictedPosition, team.actualPosition)}`}>
+                      <td className={`text-center p-0 border-r border-gray-300/30 font-semibold w-8 ${getCellColorClass(predictedPosition, team.actualPosition)}`}>
                         <div className="h-full w-full py-1 px-0 flex items-center justify-center text-[11px] sm:text-sm">
                           {typeof predictedPosition === 'number' ? predictedPosition : '-'}
                         </div>
                       </td>
-                      <td className={`text-center p-0 border-r-2 border-gray-300/40 font-semibold w-8 sm:w-10 ${getCellColorClass(predictedPosition, team.actualPosition)}`}>
+                      <td className={`text-center p-0 border-gray-300/30 font-semibold w-8 ${getPointsColorClass(points)}`}>
                         <div className="h-full w-full py-1 px-0 flex items-center justify-center text-[11px] sm:text-sm">
                           {points}
                         </div>
