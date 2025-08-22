@@ -3,8 +3,8 @@
 import React from 'react';
 import Image from 'next/image';
 
-// Helper function to get cell background color class
-const getCellColorClass = (predicted: number | undefined | null, actual: number | null) => {
+// Helper function to get cell background color class based on prediction accuracy and bonus points
+const getCellColorClass = (predicted: number | undefined | null, actual: number | null, points: number) => {
   // Check if we have valid numbers to compare
   if (predicted === undefined || predicted === null || actual === null) {
     return '';
@@ -15,26 +15,32 @@ const getCellColorClass = (predicted: number | undefined | null, actual: number 
   const actNum = Number(actual);
   
   if (predNum === actNum) {
-    return 'bg-green-400 bg-opacity-70'; // Green for exact match
+    return 'bg-green-400 dark:bg-green-600'; // Green for exact match
   }
   
   if (Math.abs(predNum - actNum) === 1) {
-    return 'bg-yellow-400 bg-opacity-70'; // Yellow for off by one
+    return 'bg-yellow-400 dark:bg-yellow-600'; // Yellow for off by one
   }
   
-  return 'bg-red-400 bg-opacity-70'; // Red for more than one off
+  // Check for bonus points (not a hit or near miss but still got a point)
+  if (points > 0 && Math.abs(predNum - actNum) > 1) {
+    return 'bg-red-200 dark:bg-red-400'; // Light red for bonus points
+  }
+  
+  return 'bg-red-400 dark:bg-red-600'; // Red for more than one off with no bonus points
 };
 
-// Helper function to color the points cells based on point value
-const getPointsColorClass = (points: number) => {
-  if (points === 3) {
-    return 'bg-green-400 bg-opacity-70'; // Green for 3 points (exact match)
-  }
-  if (points === 1) {
-    return 'bg-yellow-400 bg-opacity-70'; // Yellow for 1 point (off by one)
-  }
-  return ''; // No color for 0 points
-};
+// We're not using this function anymore since we're coloring based on prediction accuracy
+// directly in both cells rather than points value
+// const getPointsColorClass = (points: number) => {
+//   if (points === 3) {
+//     return 'bg-green-400 dark:bg-green-600'; // Green for exact match (3 points)
+//   }
+//   if (points === 1) {
+//     return 'bg-yellow-400 dark:bg-yellow-600'; // Yellow for near miss (1 point)
+//   }
+//   return 'bg-red-400 dark:bg-red-600'; // Red for all other cases (0 points)
+// };
 
 // Define types for props
 type Team = {
@@ -65,12 +71,34 @@ export default function LeaderboardTable({ teams, users }: LeaderboardTableProps
 
   return (
     <div className="w-full overflow-auto">
-      <div className="w-[780px] mx-auto">
-        <table className="w-full text-[10px] xs:text-xs sm:text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-md table-fixed">
+      <div className="max-w-[840px] mx-auto">
+        {/* Color Legend - One line with responsive sizing */}
+        <div className="mb-4 flex justify-center overflow-x-auto whitespace-nowrap py-1">
+          <div className="flex items-center space-x-3 md:space-x-4 text-[8px] xs:text-[9px] sm:text-xs">
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-3 bg-green-400 dark:bg-green-600"></div>
+              <span>Correct</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-3 bg-yellow-400 dark:bg-yellow-600"></div>
+              <span>Near Miss (±1)</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-3 bg-red-200 dark:bg-red-400"></div>
+              <span>Bonus Point Only</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-3 bg-red-400 dark:bg-red-600"></div>
+              <span>Incorrect</span>
+            </div>
+          </div>
+        </div>
+        
+        <table className="w-full text-[10px] xs:text-xs sm:text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-md table-auto">
           <thead>
             <tr className="bg-gray-100 dark:bg-gray-800 border-b dark:border-gray-700">
               <th rowSpan={2} className="text-center py-1 sm:py-2 px-0 sm:px-1 text-xs sm:text-base font-semibold align-middle w-8">Pos</th>
-              <th rowSpan={2} className="text-left py-1 sm:py-2 px-1 sm:px-2 text-xs sm:text-base font-semibold align-middle w-24 sm:w-32">Team</th>
+              <th rowSpan={2} className="text-left py-1 sm:py-2 px-1 sm:px-2 text-xs sm:text-base font-semibold align-middle w-40 sm:w-60">Team</th>
               {sortedUsers.map(user => (
                 <th key={user.id} colSpan={2} className="text-center py-1 sm:py-2 px-1 sm:px-2 text-xs sm:text-base font-semibold border-l-2 border-gray-200 dark:border-gray-600">{user.name}</th>
               ))}
@@ -91,8 +119,8 @@ export default function LeaderboardTable({ teams, users }: LeaderboardTableProps
                 <td className="text-center py-1 sm:py-2 px-0 sm:px-1 font-bold text-xs sm:text-base w-8">
                   {typeof team.actualPosition === 'number' ? team.actualPosition : '-'}
                 </td>
-                <td className="py-0 sm:py-1 px-1 sm:px-2 w-24 sm:w-32">
-                  <div className="flex items-center h-6 sm:h-7 overflow-hidden">
+                <td className="py-0 sm:py-1 px-1 sm:px-2 w-40 sm:w-60">
+                  <div className="flex items-center h-6 sm:h-7">
                     <div className="flex-none w-5 h-5 flex justify-center">
                       {team.abbr && (
                         <Image 
@@ -106,7 +134,7 @@ export default function LeaderboardTable({ teams, users }: LeaderboardTableProps
                         />
                       )}
                     </div>
-                    <span className="font-semibold hidden sm:inline ml-2 truncate block">{team.name}</span>
+                    <span className="font-semibold hidden sm:inline ml-2">{team.name}</span>
                     <span className="font-semibold inline sm:hidden ml-2">{team.abbr || team.name?.substring(0,3)}</span>
                   </div>
                 </td>
@@ -117,12 +145,12 @@ export default function LeaderboardTable({ teams, users }: LeaderboardTableProps
                   
                   return (
                     <React.Fragment key={user.id}>
-                      <td className={`text-center p-0 border-r border-gray-300/30 font-semibold w-8 ${getCellColorClass(predictedPosition, team.actualPosition)}`}>
+                      <td className={`text-center p-0 border-r border-gray-300/30 font-semibold w-8 ${getCellColorClass(predictedPosition, team.actualPosition, points)}`}>
                         <div className="h-full w-full py-1 px-0 flex items-center justify-center text-[11px] sm:text-sm">
                           {typeof predictedPosition === 'number' ? predictedPosition : '-'}
                         </div>
                       </td>
-                      <td className={`text-center p-0 border-gray-300/30 font-semibold w-8 ${getPointsColorClass(points)}`}>
+                      <td className={`text-center p-0 border-gray-300/30 font-semibold w-8 ${getCellColorClass(predictedPosition, team.actualPosition, points)}`}>
                         <div className="h-full w-full py-1 px-0 flex items-center justify-center text-[11px] sm:text-sm">
                           {points}
                         </div>
