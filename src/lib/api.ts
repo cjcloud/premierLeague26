@@ -3,8 +3,10 @@ import { teams } from '@/db/schema';
 import { eq, desc, sql } from 'drizzle-orm';
 import { revalidatePath, revalidateTag } from 'next/cache';
 
-// Use environment variable for API URL with fallback for local development
-const API_URL = process.env.PREMIER_LEAGUE_API_URL || 'https://sdp-prem-prod.premier-league-prod.pulselive.com/api/v5/competitions/8/seasons/2025/standings?live=false';
+// Use local proxy endpoint to avoid CORS issues
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+const API_ENDPOINT = '/api/premier-league?endpoint=standings&live=false';
+const API_URL = `${API_BASE_URL}${API_ENDPOINT}`;
 
 interface ApiTeamEntry {
   team: {
