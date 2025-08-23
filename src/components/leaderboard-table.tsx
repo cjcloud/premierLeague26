@@ -48,7 +48,7 @@ type Team = {
   name: string;
   abbr: string | null;
   actualPosition: number | null;
-  points: number;
+  points: number | null;
 };
 
 type UserScore = {
@@ -141,7 +141,7 @@ export default function LeaderboardTable({ teams, users }: LeaderboardTableProps
                   </div>
                 </td>
                 <td className="bg-gray-100 dark:bg-gray-800 text-center text-muted-foreground py-1 sm:py-2 px-0 sm:px-1 font-bold text-[11px] sm:text-sm w-8">
-                  {team.points || 0}
+                  {team.points !== null ? team.points : 0}
                 </td>
                 {sortedUsers.map(user => {
                   const predictedPosition = user.predictions[team.id];
