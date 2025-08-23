@@ -99,7 +99,7 @@ export default function LeaderboardTable({ teams, users }: LeaderboardTableProps
           <thead>
             <tr className="bg-gray-100 dark:bg-gray-800 border-b dark:border-gray-700">
               <th rowSpan={2} className="text-center py-1 sm:py-2 px-0 sm:px-1 text-xs sm:text-base font-semibold align-middle w-8">Pos</th>
-              <th rowSpan={2} className="text-left py-1 sm:py-2 px-1 sm:px-2 pl-8 text-xs sm:text-base font-semibold align-middle w-40 sm:w-60">Team</th>
+              <th rowSpan={2} className="text-left py-1 sm:py-2 px-1 sm:px-2 pl-7 text-xs sm:text-base font-semibold align-middle w-40 sm:w-60">Team</th>
               <th rowSpan={2} className="text-center py-1 sm:py-2 px-0 sm:px-1 text-xs sm:text-base font-semibold align-middle w-8">Prem Pts</th>
               {sortedUsers.map(user => (
                 <th key={user.id} colSpan={2} className="text-center py-1 sm:py-2 px-1 sm:px-2 text-xs sm:text-base font-semibold border-l-2 border-gray-200 dark:border-gray-600">{user.name}</th>
@@ -121,7 +121,7 @@ export default function LeaderboardTable({ teams, users }: LeaderboardTableProps
                 <td className="text-center py-1 sm:py-2 px-0 sm:px-1 font-bold text-xs sm:text-base w-8">
                   {typeof team.actualPosition === 'number' ? team.actualPosition : '-'}
                 </td>
-                <td className="py-0 sm:py-1 px-1 sm:px-2 pl-8 w-40 sm:w-60">
+                <td className="py-0 sm:py-1 px-1 sm:px-2 pl-7 w-40 sm:w-60">
                   <div className="flex items-center h-6 sm:h-7">
                     <div className="flex-none w-5 h-5 flex justify-center">
                       {team.abbr && (
