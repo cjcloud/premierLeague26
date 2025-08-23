@@ -166,7 +166,7 @@ export default function LeaderboardTable({ teams, users }: LeaderboardTableProps
               </tr>
             ))}
             <tr className="bg-gray-300 dark:bg-gray-700 font-bold">
-              <td colSpan={2} className="text-right py-0 px-4">Total Points</td>
+              <td colSpan={3} className="text-right py-0 px-4">Total Points</td>
               {sortedUsers.map(user => (
                 <td key={`${user.id}-total-score`} colSpan={2} className="text-center py-0 px-2 border-l-2 border-slate-100 dark:border-gray-600">
                   {user.points}
