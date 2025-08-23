@@ -3,13 +3,10 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { RefreshCw } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
-import { shouldUpdateStandings, updateTeamStandings } from '@/lib/api';
 
 export default function RefreshLeaderboardButton() {
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const router = useRouter();
   const { toast } = useToast();
 
   const handleRefresh = async () => {
@@ -25,8 +22,10 @@ export default function RefreshLeaderboardButton() {
         description: "Checking if an update is needed...",
       });
       
-      // Check if data needs updating
-      const needsUpdate = await shouldUpdateStandings(`manual-check-${timestamp}`);
+      // Use the API endpoint to check if data needs updating
+      const checkResponse = await fetch(`/api/v1/teams/check-update?t=${timestamp}`);
+      const checkResult = await checkResponse.json();
+      const needsUpdate = checkResult.needsUpdate;
       
       if (needsUpdate) {
         // Show updating toast
@@ -35,11 +34,19 @@ export default function RefreshLeaderboardButton() {
           description: "Fetching the latest Premier League standings...",
         });
         
-        // Perform the update
-        const result = await updateTeamStandings(`manual-refresh-${timestamp}`);
+        // Use the API endpoint instead of directly calling the function
+        const updateResponse = await fetch('/api/v1/teams/update', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
         
-        // Force a refresh of the page to show new data
-        router.refresh();
+        const result = await updateResponse.json();
+        
+        // Instead of using router.refresh() which can cause issues with static generation,
+        // use location.reload() to do a full client-side refresh
+        window.location.reload();
         
         // Show success toast
         if (result.success) {
@@ -63,8 +70,8 @@ export default function RefreshLeaderboardButton() {
           variant: "default"
         });
         
-        // Still refresh the page to ensure we're showing the latest from DB
-        router.refresh();
+        // Use window.location.reload() for consistency
+        window.location.reload();
       }
     } catch (error) {
       console.error('Error refreshing leaderboard:', error);

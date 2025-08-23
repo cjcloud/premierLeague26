@@ -1,12 +1,11 @@
 import React from 'react';
 import { headers } from 'next/headers';
 
-// Use dynamic rendering to ensure fresh data
-export const dynamic = 'force-dynamic';
-// Add cache tag for easier cache invalidation
+// Use ISR with tags for revalidation
+export const dynamic = 'auto';
 export const runtime = 'nodejs';
-// Disable data caching (Next.js 14 prefers this over fetchCache)
-export const revalidate = 0;
+// Enable tag-based revalidation
+export const revalidate = 300; // 5 minutes fallback
 
 import { getUsersWithPredictions } from '@/lib/db/queries/users';
 import { getTeams } from '@/lib/db/queries/teams';

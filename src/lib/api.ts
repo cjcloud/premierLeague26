@@ -14,6 +14,7 @@ interface ApiTeamEntry {
   };
   overall: {
     position: number;
+    points: number;
   };
 }
 
@@ -71,14 +72,19 @@ export async function shouldUpdateStandings(cacheKey?: string): Promise<boolean>
 /**
  * Updates team standings from the Premier League API
  * @param cacheKey Optional parameter to prevent caching of this function call
+ * @param baseUrl Optional base URL to use instead of API_BASE_URL
  */
-export async function updateTeamStandings(cacheKey?: string) {
+export async function updateTeamStandings(cacheKey?: string, baseUrl?: string) {
   // Log the cache key to verify it's being used
   // Cache key handling
   // No debug logging to prevent information leakage
   try {
+    // Construct URL using baseUrl if provided, otherwise use API_BASE_URL
+    const base = baseUrl || API_BASE_URL;
+    const apiUrl = `${base}${API_ENDPOINT}`;
+    
     // Fetching latest standings from Premier League API
-    const response = await fetch(API_URL, {
+    const response = await fetch(apiUrl, {
       headers: {
         'Origin': 'https://www.premierleague.com',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
@@ -102,21 +108,23 @@ export async function updateTeamStandings(cacheKey?: string) {
     for (const entry of standings) {
       const apiId = parseInt(entry.team.id, 10);
       const position = entry.overall.position;
+      const points = entry.overall.points;
       // Await each update individually to process them sequentially
       await db
         .update(teams)
         .set({ 
           actualPosition: position,
+          points: points,
           lastUpdated: new Date() 
         })
         .where(eq(teams.apiId, apiId));
     }
     
-    // Comprehensive cache invalidation
-    revalidatePath('/leaderboard', 'page');
-    revalidatePath('/admin', 'page');
-    revalidatePath('/', 'layout');
+    // Use tag-based revalidation instead of path-based to avoid issues with static generation
     revalidateTag('team-data');
+    revalidateTag('leaderboard-data');
+    revalidateTag('admin-data');
+    revalidateTag('home-data');
 
     // Successfully updated team standings in the database
     return { success: true, message: `Updated ${standings.length} teams.` };

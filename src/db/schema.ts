@@ -19,6 +19,7 @@ export const teams = pgTable('teams', {
   shortName: varchar('short_name', { length: 256 }),
   abbr: varchar('abbr', { length: 10 }),
   actualPosition: integer('actual_position'),
+  points: integer('points').default(0),
   lastUpdated: timestamp('last_updated').defaultNow(),
 });
 

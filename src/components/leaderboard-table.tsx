@@ -48,6 +48,7 @@ type Team = {
   name: string;
   abbr: string | null;
   actualPosition: number | null;
+  points: number;
 };
 
 type UserScore = {
@@ -99,6 +100,7 @@ export default function LeaderboardTable({ teams, users }: LeaderboardTableProps
             <tr className="bg-gray-100 dark:bg-gray-800 border-b dark:border-gray-700">
               <th rowSpan={2} className="text-center py-1 sm:py-2 px-0 sm:px-1 text-xs sm:text-base font-semibold align-middle w-8">Pos</th>
               <th rowSpan={2} className="text-left py-1 sm:py-2 px-1 sm:px-2 text-xs sm:text-base font-semibold align-middle w-40 sm:w-60">Team</th>
+              <th rowSpan={2} className="text-center py-1 sm:py-2 px-0 sm:px-1 text-xs sm:text-base font-semibold align-middle w-8">Prem Pts</th>
               {sortedUsers.map(user => (
                 <th key={user.id} colSpan={2} className="text-center py-1 sm:py-2 px-1 sm:px-2 text-xs sm:text-base font-semibold border-l-2 border-gray-200 dark:border-gray-600">{user.name}</th>
               ))}
@@ -137,6 +139,9 @@ export default function LeaderboardTable({ teams, users }: LeaderboardTableProps
                     <span className="font-semibold hidden sm:inline ml-2">{team.name}</span>
                     <span className="font-semibold inline sm:hidden ml-2">{team.abbr || team.name?.substring(0,3)}</span>
                   </div>
+                </td>
+                <td className="bg-gray-100 dark:bg-gray-800 text-center text-muted-foreground py-1 sm:py-2 px-0 sm:px-1 font-bold text-[11px] sm:text-sm w-8">
+                  {team.points || 0}
                 </td>
                 {sortedUsers.map(user => {
                   const predictedPosition = user.predictions[team.id];
