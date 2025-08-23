@@ -5,7 +5,7 @@ import { revalidatePath, revalidateTag } from 'next/cache';
 
 // Use local proxy endpoint to avoid CORS issues
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-const API_ENDPOINT = '/api/premier-league?endpoint=standings&live=false';
+const API_ENDPOINT = '/api/premier-league?endpoint=standings&live=true';
 const API_URL = `${API_BASE_URL}${API_ENDPOINT}`;
 
 interface ApiTeamEntry {
