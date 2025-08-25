@@ -44,17 +44,18 @@ export default function RefreshLeaderboardButton() {
         
         const result = await updateResponse.json();
         
-        // Instead of using router.refresh() which can cause issues with static generation,
-        // use location.reload() to do a full client-side refresh
-        window.location.reload();
-        
-        // Show success toast
+        // Show success or error toast based on the result
         if (result.success) {
           toast({
             title: "Success",
             description: "Premier League data has been refreshed successfully!",
             variant: "default"
           });
+          
+          // Only reload after showing success toast
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000); // Give toast time to display before reload
         } else {
           toast({
             title: "Refresh failed",
@@ -70,14 +71,20 @@ export default function RefreshLeaderboardButton() {
           variant: "default"
         });
         
-        // Use window.location.reload() for consistency
-        window.location.reload();
+        // Even though the data hasn't changed, the user expects some feedback
+        // We'll update the UI state to show we've completed the refresh action
+        setIsRefreshing(false);
       }
     } catch (error) {
       console.error('Error refreshing leaderboard:', error);
+      // Provide more specific error information when possible
+      const errorMessage = error instanceof Error ? 
+        error.message : 
+        "Unable to refresh the leaderboard data";
+      
       toast({
         title: "Refresh failed",
-        description: "Unable to refresh the leaderboard data",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {
