@@ -88,6 +88,9 @@ export async function updateTeamStandings(cacheKey?: string, baseUrl?: string) {
       headers: {
         'Origin': 'https://www.premierleague.com',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+        'Referer': 'https://www.premierleague.com/',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json, text/plain, */*',
         // Add cache control headers to prevent caching
         'Cache-Control': 'no-cache, no-store, must-revalidate',
         'Pragma': 'no-cache',
@@ -97,6 +100,13 @@ export async function updateTeamStandings(cacheKey?: string, baseUrl?: string) {
     });
 
     if (!response.ok) {
+      // Add more detailed error information for debugging
+      try {
+        const errorText = await response.text();
+        console.error(`API Error Response (${response.status}):`, errorText);
+      } catch (textError) {
+        console.error('Could not extract error details from response');
+      }
       throw new Error(`API request failed with status ${response.status}`);
     }
 
