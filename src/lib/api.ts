@@ -29,8 +29,7 @@ interface ApiResponse {
  */
 export async function shouldUpdateStandings(cacheKey?: string): Promise<boolean> {
   // Log the cache key to verify it's being used
-  // Cache key handling
-  // No debug logging to prevent information leakage
+  console.log(`shouldUpdateStandings called with cacheKey: ${cacheKey}`);
   try {
     // Get the most recent lastUpdated value from any team
     const result = await db
@@ -39,15 +38,17 @@ export async function shouldUpdateStandings(cacheKey?: string): Promise<boolean>
       .orderBy(desc(teams.lastUpdated))
       .limit(1);
     
+    console.log('Checking if data needs update - Query result:', result);
+    
     // If no teams exist yet, we should definitely update
     if (!result.length) {
-      // No teams found in the database. Update needed.
+      console.log('No teams found in database. Update needed.');
       return true;
     }
     
     const lastUpdate = result[0].lastUpdated;
     if (!lastUpdate) {
-      // Team exists but lastUpdated is null. Update needed.
+      console.log('Teams exist but lastUpdated is null. Update needed.');
       return true;
     }
     
@@ -55,8 +56,13 @@ export async function shouldUpdateStandings(cacheKey?: string): Promise<boolean>
     const diffMs = now.getTime() - lastUpdate.getTime();
     const diffMinutes = diffMs / (1000 * 60);
     
+    console.log(`Last update time: ${lastUpdate}`);
+    console.log(`Current time: ${now}`);
+    console.log(`Time difference: ${diffMinutes.toFixed(2)} minutes`);
+    
     // If data is older than 5 minutes, we should update
     const isStale = diffMinutes > 5;
+    console.log(`Is data stale? ${isStale} (threshold: 5 minutes)`);
     // Time-based update check complete
     
     return isStale;
@@ -113,14 +119,29 @@ export async function updateTeamStandings(cacheKey?: string) {
       const position = entry.overall.position;
       const points = entry.overall.points;
       // Await each update individually to process them sequentially
-      await db
-        .update(teams)
-        .set({ 
-          actualPosition: position,
-          points: points,
-          lastUpdated: new Date() 
-        })
-        .where(eq(teams.apiId, apiId));
+      // First check if position or points have actually changed to avoid unnecessary updates
+      const teamData = await db
+        .select({ actualPosition: teams.actualPosition, points: teams.points })
+        .from(teams)
+        .where(eq(teams.apiId, apiId))
+        .limit(1);
+
+      // Only update if data has actually changed
+      if (!teamData.length || 
+          teamData[0].actualPosition !== position || 
+          teamData[0].points !== points) {
+        console.log(`Updating team ${apiId} with new data - Position: ${position}, Points: ${points}`);
+        await db
+          .update(teams)
+          .set({ 
+            actualPosition: position,
+            points: points,
+            lastUpdated: new Date() 
+          })
+          .where(eq(teams.apiId, apiId));
+      } else {
+        console.log(`Team ${apiId} data unchanged, skipping update`);
+      }
     }
     
     // Use tag-based revalidation instead of path-based to avoid issues with static generation
