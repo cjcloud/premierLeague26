@@ -3,10 +3,8 @@ import { teams } from '@/db/schema';
 import { eq, desc, sql } from 'drizzle-orm';
 import { revalidatePath, revalidateTag } from 'next/cache';
 
-// Use local proxy endpoint to avoid CORS issues
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-const API_ENDPOINT = '/api/premier-league?endpoint=standings&live=true';
-const API_URL = `${API_BASE_URL}${API_ENDPOINT}`;
+// Use direct Premier League API URL
+const API_URL = 'https://sdp-prem-prod.premier-league-prod.pulselive.com/api/v5/competitions/8/seasons/2025/standings?live=false';
 
 interface ApiTeamEntry {
   team: {
@@ -74,31 +72,26 @@ export async function shouldUpdateStandings(cacheKey?: string): Promise<boolean>
  * @param cacheKey Optional parameter to prevent caching of this function call
  * @param baseUrl Optional base URL to use instead of API_BASE_URL
  */
-export async function updateTeamStandings(cacheKey?: string, baseUrl?: string) {
-  // Log the cache key to verify it's being used
-  // Cache key handling
-  // No debug logging to prevent information leakage
+export async function updateTeamStandings(cacheKey?: string) {
+  // No longer using baseUrl parameter since we're going direct to the API
   try {
-    // Construct URL using baseUrl if provided, otherwise use API_BASE_URL
-    const base = baseUrl || API_BASE_URL;
-    const apiUrl = `${base}${API_ENDPOINT}`;
+    console.log('Requesting Premier League API URL:', API_URL);
     
-    // Fetching latest standings from Premier League API
-    const response = await fetch(apiUrl, {
+    // Use the direct Premier League API URL
+    const response = await fetch(API_URL, {
       headers: {
+        // Full headers set for Premier League API
         'Origin': 'https://www.premierleague.com',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
         'Referer': 'https://www.premierleague.com/',
         'Content-Type': 'application/json',
         'Accept': 'application/json, text/plain, */*',
-        // Add cache control headers to prevent caching
         'Cache-Control': 'no-cache, no-store, must-revalidate',
         'Pragma': 'no-cache',
       },
-      // Force fetch to bypass cache
-      next: { revalidate: 0 },
+      cache: 'no-store',
     });
-
+    
     if (!response.ok) {
       // Add more detailed error information for debugging
       try {
@@ -107,7 +100,7 @@ export async function updateTeamStandings(cacheKey?: string, baseUrl?: string) {
       } catch (textError) {
         console.error('Could not extract error details from response');
       }
-      throw new Error(`API request failed with status ${response.status}`);
+      throw new Error(`Premier League API request failed with status ${response.status}`);
     }
 
     const data: ApiResponse = await response.json();

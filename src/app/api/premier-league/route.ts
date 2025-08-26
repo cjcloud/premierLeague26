@@ -4,12 +4,17 @@ export async function GET(request: NextRequest) {
   // Extract the path and query parameters from the request
   const { searchParams } = new URL(request.url);
   const endpoint = searchParams.get('endpoint') || 'standings';
-  const live = searchParams.get('live') || 'false';
+  // Always use live=false as requested
+  const live = 'false';
 
   try {
     // Make the request to the Premier League API from the server side
+    // Log the exact URL to help with debugging
+    const apiUrl = `https://sdp-prem-prod.premier-league-prod.pulselive.com/api/v5/competitions/8/seasons/2025/${endpoint}?live=${live}`;
+    console.log('Requesting Premier League API URL:', apiUrl);
+    
     const apiResponse = await fetch(
-      `https://sdp-prem-prod.premier-league-prod.pulselive.com/api/v5/competitions/8/seasons/2025/${endpoint}?live=${live}`,
+      apiUrl,
       {
         headers: {
           'Origin': 'https://www.premierleague.com',

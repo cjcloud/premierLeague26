@@ -29,7 +29,7 @@ async function main() {
   // Seeding teams
 
   // Fetch team data from the Premier League API
-  const response = await fetch('https://sdp-prem-prod.premier-league-prod.pulselive.com/api/v5/competitions/8/seasons/2025/standings?live=true', {
+  const response = await fetch('https://sdp-prem-prod.premier-league-prod.pulselive.com/api/v5/competitions/8/seasons/2025/standings?live=false', {
     headers: {
       'Origin': 'https://www.premierleague.com',
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
