@@ -1,4 +1,4 @@
-import { updateTeamStandings } from '@/lib/api';
+import { updateTeamStandings, shouldUpdateStandings } from '@/lib/api';
 import { NextResponse } from 'next/server';
 
 export async function POST() {
@@ -6,7 +6,18 @@ export async function POST() {
     // Add timestamp to avoid any caching issues
     const timestamp = Date.now();
     
-    // Perform the direct API update
+    // Check if data is stale (older than 3 minutes) before making API call
+    const needsUpdate = await shouldUpdateStandings(`should-update-${timestamp}`);
+    
+    if (!needsUpdate) {
+      // Data is fresh (less than 3 minutes old), no need to update
+      return NextResponse.json({
+        success: true,
+        message: 'Data is already up to date (less than 3 minutes old).'
+      });
+    }
+    
+    // Data is stale, perform the API update
     const result = await updateTeamStandings(`api-update-${timestamp}`);
     
     if (!result.success) {
