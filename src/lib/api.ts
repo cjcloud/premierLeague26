@@ -24,7 +24,7 @@ interface ApiResponse {
 
 /**
  * Checks if the team standings data needs to be updated
- * Data is considered stale if it's older than 3 minutes
+ * Data is considered stale if it's older than 5 minutes
  * @param cacheKey Optional parameter to prevent caching of this function call
  */
 export async function shouldUpdateStandings(cacheKey?: string): Promise<boolean> {
@@ -55,8 +55,8 @@ export async function shouldUpdateStandings(cacheKey?: string): Promise<boolean>
     const diffMs = now.getTime() - lastUpdate.getTime();
     const diffMinutes = diffMs / (1000 * 60);
     
-    // If data is older than 3 minutes, we should update
-    const isStale = diffMinutes > 3;
+    // If data is older than 5 minutes, we should update
+    const isStale = diffMinutes > 5;
     // Time-based update check complete
     
     return isStale;

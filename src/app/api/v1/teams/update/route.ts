@@ -6,14 +6,14 @@ export async function POST() {
     // Add timestamp to avoid any caching issues
     const timestamp = Date.now();
     
-    // Check if data is stale (older than 3 minutes) before making API call
+    // Check if data is stale (older than 5 minutes) before making API call
     const needsUpdate = await shouldUpdateStandings(`should-update-${timestamp}`);
     
     if (!needsUpdate) {
-      // Data is fresh (less than 3 minutes old), no need to update
+      // Data is fresh (less than 5 minutes old), no need to update
       return NextResponse.json({
         success: true,
-        message: 'Data is already up to date (less than 3 minutes old).'
+        message: 'Data is already up to date (less than 5 minutes old).'
       });
     }
     
