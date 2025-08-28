@@ -1,14 +1,38 @@
 import { updateTeamStandings, shouldUpdateStandings } from '@/lib/api';
 import { NextResponse } from 'next/server';
+import { db } from '@/db';
+import { teams } from '@/db/schema';
+import { desc } from 'drizzle-orm';
 
 export async function POST() {
   try {
     // Add timestamp to avoid any caching issues
     const timestamp = Date.now();
-    console.log(`[Update Route] Starting update check at ${new Date().toISOString()}`);
+    const currentTime = new Date().toISOString();
+    console.log(`[Update Route] Starting update check at ${currentTime}`);
+    console.log(`[Update Route] Current time: ${new Date()}`);
+    console.log(`[Update Route] Current Unix timestamp: ${Date.now()}`);
     
     // Check if data is stale (older than 5 minutes) before making API call
     console.log('[Update Route] Checking if data needs update...');
+    
+    // Get the last update time for logging
+    const db_result = await db
+      .select({ lastUpdated: teams.lastUpdated })
+      .from(teams)
+      .orderBy(desc(teams.lastUpdated))
+      .limit(1);
+    
+    if (db_result.length) {
+      console.log(`[Update Route] DB last update time: ${db_result[0].lastUpdated}`);
+      const diffMs = Date.now() - db_result[0].lastUpdated.getTime();
+      const diffMinutes = diffMs / (1000 * 60);
+      console.log(`[Update Route] Time since last update: ${diffMinutes.toFixed(2)} minutes`);
+      console.log(`[Update Route] Should update (> 5 min)? ${diffMinutes > 5}`);
+    } else {
+      console.log('[Update Route] No previous update timestamp found in DB');
+    }
+    
     const needsUpdate = await shouldUpdateStandings(`should-update-${timestamp}`);
     console.log(`[Update Route] shouldUpdateStandings result: ${needsUpdate}`);
     
