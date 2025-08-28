@@ -98,7 +98,7 @@ export default function RefreshLeaderboardButton() {
         toast({
           title: "DATA ALREADY FRESH",
           description: `Premier League data was updated at ${lastUpdatedTime} (${minutesAgo}). Next update available in ${Math.max(0, 5-checkResult.lastUpdatedMinutesAgo).toFixed(1)} minutes.`,
-          variant: "warning"
+          variant: "default"
         });
           
         // Even though the data hasn't changed, the user expects some feedback
