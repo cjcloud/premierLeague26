@@ -50,9 +50,10 @@ export default function RefreshLeaderboardButton() {
           // Check if we got a dataFreshness object, which means the data was already fresh
           if (result.dataFreshness) {
             toast({
-              title: "DATA ALREADY FRESH",
+              title: "DATA UP TO DATE",
               description: `Premier League data was updated ${result.dataFreshness.minutesAgo.toFixed(1)} minutes ago. Next update available in ${result.dataFreshness.nextUpdateAvailableIn.toFixed(1)} minutes.`,
-              variant: "default"
+              variant: "default",
+              className: "bg-pink-300"
             });
           } else {
             toast({
@@ -60,25 +61,26 @@ export default function RefreshLeaderboardButton() {
               description: "Premier League data has been refreshed successfully!",
               variant: "default"
             });
-          }
-          
-          // Instead of reloading the page which can bypass the freshness check,
-          // use Next.js's router refresh capabilities
-          setTimeout(() => {
-            // Use Next.js cache revalidation instead of a full page reload
-            fetch('/api/v1/revalidate?path=/leaderboard', { method: 'POST' })
-              .then(() => {
-                toast({
-                  title: "UI Updated",
-                  description: "The leaderboard has been refreshed with the latest data.",
-                  variant: "default"
+            
+            // Only revalidate and show UI update when data was actually refreshed
+            // Instead of reloading the page which can bypass the freshness check,
+            // use Next.js's router refresh capabilities
+            setTimeout(() => {
+              // Use Next.js cache revalidation instead of a full page reload
+              fetch('/api/v1/revalidate?path=/leaderboard', { method: 'POST' })
+                .then(() => {
+                  toast({
+                    title: "UI Updated",
+                    description: "The leaderboard has been refreshed with the latest data.",
+                    variant: "default"
+                  });
+                })
+                .catch(() => {
+                  // Fall back to window reload if revalidation fails
+                  window.location.reload();
                 });
-              })
-              .catch(() => {
-                // Fall back to window reload if revalidation fails
-                window.location.reload();
-              });
-          }, 1000); // Give toast time to display before refresh
+            }, 1000); // Give toast time to display before refresh
+          }
         } else {
           toast({
             title: "Refresh failed",
@@ -96,9 +98,10 @@ export default function RefreshLeaderboardButton() {
           `${checkResult.lastUpdatedMinutesAgo} minutes ago` : 'recently';
           
         toast({
-          title: "DATA ALREADY FRESH",
+          title: "DATA UP TO DATE",
           description: `Premier League data was updated at ${lastUpdatedTime} (${minutesAgo}). Next update available in ${Math.max(0, 5-checkResult.lastUpdatedMinutesAgo).toFixed(1)} minutes.`,
-          variant: "default"
+          variant: "default",
+          className: "bg-amber-50"
         });
           
         // Even though the data hasn't changed, the user expects some feedback
