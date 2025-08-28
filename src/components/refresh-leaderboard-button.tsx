@@ -101,7 +101,7 @@ export default function RefreshLeaderboardButton() {
           title: "DATA UP TO DATE",
           description: `Premier League data was updated at ${lastUpdatedTime} (${minutesAgo}). Next update available in ${Math.max(0, 5-checkResult.lastUpdatedMinutesAgo).toFixed(1)} minutes.`,
           variant: "default",
-          className: "bg-pink-50"
+          className: "bg-pink-400"
         });
           
         // Even though the data hasn't changed, the user expects some feedback
