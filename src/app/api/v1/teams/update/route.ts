@@ -24,6 +24,7 @@ export async function POST() {
       .limit(1);
     
     if (db_result.length) {
+      // We know lastUpdated can't be null because of defaultNow() in the schema
       console.log(`[Update Route] DB last update time: ${db_result[0].lastUpdated}`);
       const diffMs = Date.now() - db_result[0].lastUpdated.getTime();
       const diffMinutes = diffMs / (1000 * 60);
@@ -41,9 +42,10 @@ export async function POST() {
       console.log('[Update Route] Data is fresh (less than 5 minutes old), returning early');
       
       // Include detailed information about freshness
-      const lastUpdatedTime = db_result[0]?.lastUpdated || null;
+      // We know there's data in the DB and lastUpdated can't be null (defaultNow in schema)
+      const lastUpdatedTime = db_result[0].lastUpdated;
       const now = new Date();
-      const diffMs = lastUpdatedTime ? now.getTime() - lastUpdatedTime.getTime() : 0;
+      const diffMs = now.getTime() - lastUpdatedTime.getTime();
       const diffMinutes = diffMs / (1000 * 60);
       const nextUpdateAvailableIn = Math.max(0, 5 - diffMinutes);
       
@@ -51,7 +53,7 @@ export async function POST() {
         success: true,
         message: 'Data is already up to date (less than 5 minutes old).',
         dataFreshness: {
-          lastUpdated: lastUpdatedTime?.toISOString(),
+          lastUpdated: lastUpdatedTime.toISOString(),
           minutesAgo: parseFloat(diffMinutes.toFixed(2)),
           nextUpdateAvailableIn: parseFloat(nextUpdateAvailableIn.toFixed(1))
         }
