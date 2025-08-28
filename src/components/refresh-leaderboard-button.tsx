@@ -52,7 +52,7 @@ export default function RefreshLeaderboardButton() {
             toast({
               title: "DATA ALREADY FRESH",
               description: `Premier League data was updated ${result.dataFreshness.minutesAgo.toFixed(1)} minutes ago. Next update available in ${result.dataFreshness.nextUpdateAvailableIn.toFixed(1)} minutes.`,
-              variant: "warning"
+              variant: "default"
             });
           } else {
             toast({
