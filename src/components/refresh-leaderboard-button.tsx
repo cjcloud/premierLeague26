@@ -78,12 +78,19 @@ export default function RefreshLeaderboardButton() {
         }
       } else {
         // Data is already fresh - no update needed
+        // Format the time to make it user-friendly
+        const lastUpdatedTime = checkResult.lastUpdated ? 
+          new Date(checkResult.lastUpdated).toLocaleTimeString() : 'recently';
+        
+        const minutesAgo = checkResult.lastUpdatedMinutesAgo ? 
+          `${checkResult.lastUpdatedMinutesAgo} minutes ago` : 'recently';
+          
         toast({
-          title: "Data already up to date",
-          description: "Premier League data is already fresh (less than 5 minutes old)",
+          title: "Data not refreshed - already up to date",
+          description: `Premier League data was already updated at ${lastUpdatedTime} (${minutesAgo}). Next update available in ${Math.max(0, 5-checkResult.lastUpdatedMinutesAgo).toFixed(1)} minutes.`,
           variant: "default"
         });
-        
+          
         // Even though the data hasn't changed, the user expects some feedback
         // We'll update the UI state to show we've completed the refresh action
         setIsRefreshing(false);

@@ -3,6 +3,29 @@ import { teams } from '@/db/schema';
 import { eq, desc, sql } from 'drizzle-orm';
 import { revalidatePath, revalidateTag } from 'next/cache';
 
+/**
+ * Returns the most recent update timestamp from the teams table
+ */
+export async function getLastUpdateTime() {
+  try {
+    // Get the most recent lastUpdated value from any team
+    const result = await db
+      .select({ lastUpdated: teams.lastUpdated })
+      .from(teams)
+      .orderBy(desc(teams.lastUpdated))
+      .limit(1);
+    
+    if (!result.length) {
+      return { lastUpdated: null };
+    }
+    
+    return { lastUpdated: result[0].lastUpdated };
+  } catch (error) {
+    console.error('Error getting last update time:', error);
+    return { lastUpdated: null };
+  }
+}
+
 // Use direct Premier League API URL
 const API_URL = 'https://sdp-prem-prod.premier-league-prod.pulselive.com/api/v5/competitions/8/seasons/2025/standings?live=false';
 
