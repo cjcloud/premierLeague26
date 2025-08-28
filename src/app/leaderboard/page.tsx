@@ -95,7 +95,7 @@ const LeaderboardPage = async () => {
   // Force a timestamp parameter to ensure we always get a fresh response
   const timestamp = Date.now();
   
-  // Check if team standings data is stale (older than 3 minutes)
+  // Check if team standings data is stale (older than 5 minutes)
   const needsUpdate = await shouldUpdateStandings(`timestamp-${timestamp}`);
   
   // If update is needed, fetch fresh data from API

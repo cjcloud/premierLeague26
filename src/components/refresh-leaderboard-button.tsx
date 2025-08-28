@@ -52,10 +52,23 @@ export default function RefreshLeaderboardButton() {
             variant: "default"
           });
           
-          // Only reload after showing success toast
+          // Instead of reloading the page which can bypass the freshness check,
+          // use Next.js's router refresh capabilities
           setTimeout(() => {
-            window.location.reload();
-          }, 1000); // Give toast time to display before reload
+            // Use Next.js cache revalidation instead of a full page reload
+            fetch('/api/v1/revalidate?path=/leaderboard', { method: 'POST' })
+              .then(() => {
+                toast({
+                  title: "UI Updated",
+                  description: "The leaderboard has been refreshed with the latest data.",
+                  variant: "default"
+                });
+              })
+              .catch(() => {
+                // Fall back to window reload if revalidation fails
+                window.location.reload();
+              });
+          }, 1000); // Give toast time to display before refresh
         } else {
           toast({
             title: "Refresh failed",
@@ -67,7 +80,7 @@ export default function RefreshLeaderboardButton() {
         // Data is already fresh - no update needed
         toast({
           title: "Data already up to date",
-          description: "Premier League data is already fresh (less than 3 minutes old)",
+          description: "Premier League data is already fresh (less than 5 minutes old)",
           variant: "default"
         });
         
