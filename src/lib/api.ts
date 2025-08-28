@@ -135,37 +135,32 @@ export async function updateTeamStandings(cacheKey?: string) {
     const data: ApiResponse = await response.json();
     const standings = data.tables[0].entries;
 
-    // Process teams from standings data
-
-    for (const entry of standings) {
+    // Process teams from standings data all at once
+    console.log(`Updating all ${standings.length} teams with latest API data`);
+    
+    // Current timestamp for all records
+    const updateTimestamp = new Date();
+    
+    // Process each team but collect in a batch
+    const updatePromises = standings.map(entry => {
       const apiId = parseInt(entry.team.id, 10);
       const position = entry.overall.position;
       const points = entry.overall.points;
-      // Await each update individually to process them sequentially
-      // First check if position or points have actually changed to avoid unnecessary updates
-      const teamData = await db
-        .select({ actualPosition: teams.actualPosition, points: teams.points })
-        .from(teams)
-        .where(eq(teams.apiId, apiId))
-        .limit(1);
-
-      // Only update if data has actually changed
-      if (!teamData.length || 
-          teamData[0].actualPosition !== position || 
-          teamData[0].points !== points) {
-        console.log(`Updating team ${apiId} with new data - Position: ${position}, Points: ${points}`);
-        await db
-          .update(teams)
-          .set({ 
-            actualPosition: position,
-            points: points,
-            lastUpdated: new Date() 
-          })
-          .where(eq(teams.apiId, apiId));
-      } else {
-        console.log(`Team ${apiId} data unchanged, skipping update`);
-      }
-    }
+      
+      // Update regardless of previous values
+      return db
+        .update(teams)
+        .set({ 
+          actualPosition: position,
+          points: points,
+          lastUpdated: updateTimestamp // Same timestamp for all records
+        })
+        .where(eq(teams.apiId, apiId));
+    });
+    
+    // Execute all updates in parallel
+    await Promise.all(updatePromises);
+    console.log('All teams updated with the same timestamp:', updateTimestamp);
     
     // Use tag-based revalidation instead of path-based to avoid issues with static generation
     revalidateTag('team-data');
