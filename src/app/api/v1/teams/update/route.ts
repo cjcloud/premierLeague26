@@ -25,8 +25,9 @@ export async function POST() {
     
     if (db_result.length) {
       // We know lastUpdated can't be null because of defaultNow() in the schema
-      console.log(`[Update Route] DB last update time: ${db_result[0].lastUpdated}`);
-      const diffMs = Date.now() - db_result[0].lastUpdated.getTime();
+      // Using non-null assertion (!) to inform TypeScript that this value is definitely not null
+      console.log(`[Update Route] DB last update time: ${db_result[0].lastUpdated!}`);
+      const diffMs = Date.now() - db_result[0].lastUpdated!.getTime();
       const diffMinutes = diffMs / (1000 * 60);
       console.log(`[Update Route] Time since last update: ${diffMinutes.toFixed(2)} minutes`);
       console.log(`[Update Route] Should update (> 5 min)? ${diffMinutes > 5}`);
@@ -41,11 +42,20 @@ export async function POST() {
       // Data is fresh (less than 5 minutes old), no need to update
       console.log('[Update Route] Data is fresh (less than 5 minutes old), returning early');
       
-      // Include detailed information about freshness
-      // We know there's data in the DB and lastUpdated can't be null (defaultNow in schema)
-      const lastUpdatedTime = db_result[0].lastUpdated;
+      // Since we're in the !needsUpdate block, we know there's data in the DB
+      // TypeScript can't infer this, so we need to be explicit with our type assertions
+      const lastUpdated = db_result[0]?.lastUpdated;
+      
+      // We need to verify lastUpdated exists before using it
+      if (!lastUpdated) {
+        return NextResponse.json({
+          success: false,
+          message: 'Unable to determine data freshness.'
+        }, { status: 500 });
+      }
+      
       const now = new Date();
-      const diffMs = now.getTime() - lastUpdatedTime.getTime();
+      const diffMs = now.getTime() - lastUpdated.getTime();
       const diffMinutes = diffMs / (1000 * 60);
       const nextUpdateAvailableIn = Math.max(0, 5 - diffMinutes);
       
@@ -53,7 +63,7 @@ export async function POST() {
         success: true,
         message: 'Data is already up to date (less than 5 minutes old).',
         dataFreshness: {
-          lastUpdated: lastUpdatedTime.toISOString(),
+          lastUpdated: lastUpdated.toISOString(),
           minutesAgo: parseFloat(diffMinutes.toFixed(2)),
           nextUpdateAvailableIn: parseFloat(nextUpdateAvailableIn.toFixed(1))
         }
