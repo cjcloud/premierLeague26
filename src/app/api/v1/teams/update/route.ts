@@ -39,9 +39,22 @@ export async function POST() {
     if (!needsUpdate) {
       // Data is fresh (less than 5 minutes old), no need to update
       console.log('[Update Route] Data is fresh (less than 5 minutes old), returning early');
+      
+      // Include detailed information about freshness
+      const lastUpdatedTime = db_result[0]?.lastUpdated || null;
+      const now = new Date();
+      const diffMs = lastUpdatedTime ? now.getTime() - lastUpdatedTime.getTime() : 0;
+      const diffMinutes = diffMs / (1000 * 60);
+      const nextUpdateAvailableIn = Math.max(0, 5 - diffMinutes);
+      
       return NextResponse.json({
         success: true,
-        message: 'Data is already up to date (less than 5 minutes old).'
+        message: 'Data is already up to date (less than 5 minutes old).',
+        dataFreshness: {
+          lastUpdated: lastUpdatedTime?.toISOString(),
+          minutesAgo: parseFloat(diffMinutes.toFixed(2)),
+          nextUpdateAvailableIn: parseFloat(nextUpdateAvailableIn.toFixed(1))
+        }
       });
     }
     console.log('[Update Route] Data is stale, proceeding with update');

@@ -43,14 +43,24 @@ export default function RefreshLeaderboardButton() {
         });
         
         const result = await updateResponse.json();
+        console.log('Update response:', result);
         
         // Show success or error toast based on the result
         if (result.success) {
-          toast({
-            title: "Success",
-            description: "Premier League data has been refreshed successfully!",
-            variant: "default"
-          });
+          // Check if we got a dataFreshness object, which means the data was already fresh
+          if (result.dataFreshness) {
+            toast({
+              title: "DATA ALREADY FRESH",
+              description: `Premier League data was updated ${result.dataFreshness.minutesAgo.toFixed(1)} minutes ago. Next update available in ${result.dataFreshness.nextUpdateAvailableIn.toFixed(1)} minutes.`,
+              variant: "warning"
+            });
+          } else {
+            toast({
+              title: "Success",
+              description: "Premier League data has been refreshed successfully!",
+              variant: "default"
+            });
+          }
           
           // Instead of reloading the page which can bypass the freshness check,
           // use Next.js's router refresh capabilities
@@ -86,9 +96,9 @@ export default function RefreshLeaderboardButton() {
           `${checkResult.lastUpdatedMinutesAgo} minutes ago` : 'recently';
           
         toast({
-          title: "Data not refreshed - already up to date",
-          description: `Premier League data was already updated at ${lastUpdatedTime} (${minutesAgo}). Next update available in ${Math.max(0, 5-checkResult.lastUpdatedMinutesAgo).toFixed(1)} minutes.`,
-          variant: "default"
+          title: "DATA ALREADY FRESH",
+          description: `Premier League data was updated at ${lastUpdatedTime} (${minutesAgo}). Next update available in ${Math.max(0, 5-checkResult.lastUpdatedMinutesAgo).toFixed(1)} minutes.`,
+          variant: "warning"
         });
           
         // Even though the data hasn't changed, the user expects some feedback
