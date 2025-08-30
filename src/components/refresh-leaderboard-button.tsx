@@ -49,9 +49,13 @@ export default function RefreshLeaderboardButton() {
         if (result.success) {
           // Check if we got a dataFreshness object, which means the data was already fresh
           if (result.dataFreshness) {
+            // Use minutes ago value directly to avoid timezone issues
+            const minutesAgo = result.dataFreshness.minutesAgo.toFixed(1);
+            const nextUpdateIn = result.dataFreshness.nextUpdateAvailableIn.toFixed(1);
+            
             toast({
               title: "DATA UP TO DATE",
-              description: `Premier League data was updated ${result.dataFreshness.minutesAgo.toFixed(1)} minutes ago. Next update available in ${result.dataFreshness.nextUpdateAvailableIn.toFixed(1)} minutes.`,
+              description: `Premier League data was updated ${minutesAgo} minutes ago. Next update available in ${nextUpdateIn} minutes.`,
               variant: "default",
               className: "bg-pink-300"
             });
@@ -90,18 +94,18 @@ export default function RefreshLeaderboardButton() {
         }
       } else {
         // Data is already fresh - no update needed
-        // Format the time to make it user-friendly
-        const lastUpdatedTime = checkResult.lastUpdated ? 
-          new Date(checkResult.lastUpdated).toLocaleTimeString() : 'recently';
-        
+        // Use minutes ago value which is calculated on the server and avoids timezone issues
         const minutesAgo = checkResult.lastUpdatedMinutesAgo ? 
           `${checkResult.lastUpdatedMinutesAgo} minutes ago` : 'recently';
+        
+        // Calculate next available update time based on the minutes ago value
+        const nextUpdateIn = Math.max(0, 5-checkResult.lastUpdatedMinutesAgo).toFixed(1);
           
         toast({
           title: "DATA UP TO DATE",
-          description: `Premier League data was updated at ${lastUpdatedTime} (${minutesAgo}). Next update available in ${Math.max(0, 5-checkResult.lastUpdatedMinutesAgo).toFixed(1)} minutes.`,
+          description: `Premier League data was updated ${minutesAgo}. Next update available in ${nextUpdateIn} minutes.`,
           variant: "default",
-          className: "bg-pink-400"
+          className: "bg-pink-300"
         });
           
         // Even though the data hasn't changed, the user expects some feedback

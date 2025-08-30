@@ -15,9 +15,22 @@ export async function GET() {
     // Calculate how many minutes ago the data was updated
     let lastUpdatedMinutesAgo = null;
     if (lastUpdateInfo && lastUpdateInfo.lastUpdated) {
+      // Create a new Date object for the current time
       const now = new Date();
+      
+      // Log timestamps for debugging
+      console.log(`[check-update] DB last update time: ${lastUpdateInfo.lastUpdated}`);
+      console.log(`[check-update] Current time: ${now}`);
+      console.log(`[check-update] Current time (UTC): ${now.toUTCString()}`);
+      
+      // Calculate time difference in milliseconds using getTime() which returns milliseconds since epoch
+      // This is timezone-independent as both timestamps are converted to milliseconds
       const diffMs = now.getTime() - lastUpdateInfo.lastUpdated.getTime();
-      lastUpdatedMinutesAgo = Math.round((diffMs / (1000 * 60)) * 10) / 10; // Round to 1 decimal
+      
+      // Convert to minutes and round to 1 decimal place
+      lastUpdatedMinutesAgo = Math.round((diffMs / (1000 * 60)) * 10) / 10;
+      
+      console.log(`[check-update] Minutes since last update: ${lastUpdatedMinutesAgo}`);
     }
     
     return NextResponse.json({ 

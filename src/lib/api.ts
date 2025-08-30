@@ -75,12 +75,17 @@ export async function shouldUpdateStandings(cacheKey?: string): Promise<boolean>
       return true;
     }
     
-    const now = new Date();
-    const diffMs = now.getTime() - lastUpdate.getTime();
+    // Ensure we're working with UTC timestamps to avoid timezone issues
+    const nowUtc = new Date();
+    // Log both local and UTC timestamps for debugging
+    console.log(`Last update time from DB: ${lastUpdate}`);
+    console.log(`Current time (local): ${nowUtc}`);
+    console.log(`Current time (UTC string): ${nowUtc.toUTCString()}`);
+    
+    // Calculate time difference in milliseconds
+    const diffMs = nowUtc.getTime() - lastUpdate.getTime();
     const diffMinutes = diffMs / (1000 * 60);
     
-    console.log(`Last update time: ${lastUpdate}`);
-    console.log(`Current time: ${now}`);
     console.log(`Time difference: ${diffMinutes.toFixed(2)} minutes`);
     
     // If data is older than 5 minutes, we should update
